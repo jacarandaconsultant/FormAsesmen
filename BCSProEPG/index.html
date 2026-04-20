@@ -1,1 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Assessment</title>
 
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px;
+}
+
+.section { display: none; }
+.active { display: block; }
+
+#welcome {
+  text-align: center;
+  margin-top: 100px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+  transition: height 0.1s ease;
+}
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.next { background: #007bff; color: white; }
+.back { background: #aaa; color: white; }
+.submit { background: green; color: white; }
+.start { background: orange; color: white; }
+
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: red;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: none;
+}
+
+.case-box {
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.scenario-text {
+  white-space: pre-line;  
+  line-height: 1.6;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="timer"></div>
+
+<div class="container">
+
+  <!-- WELCOME -->
+  <div id="welcome" class="section active">
+    <h2>Selamat Datang</h2>
+    <p>Silakan klik tombol start di bawah untuk memulai asesmen. Asesmen akan berjalan selama 30 menit di mulai setelah anda mengklik tombol start. Jika waktu habis sebelum submit, maka jawaban anda akan tersubmit otomatis apa adanya.</p>
+    <button class="start" onclick="startAssessment()">Start</button>
+  </div>
+
+  <form id="form">
+
+    <!-- hidden fields -->
+    <input type="hidden" name="fvv" value="1">
+    <input type="hidden" name="fbzx">
+    <input type="hidden" name="pageHistory" value="0,1,2">
+    <input type="hidden" name="draftResponse">
+
+    <!-- SECTION 1 -->
+    <div class="section" id="s1">
+
+      <label>Nama Lengkap</label>
+      <textarea name="entry.1718822662" class="auto-expand" required></textarea>
+
+      <label>Level Jabatan</label>
+      <select name="entry.807897600" required>
+        <option value="">Pilih</option>
+        <option>Profesional 1</option>
+        <option>Profesional 2</option>
+        <option>Profesional 3</option>
+      </select>
+
+      <label>Unit Kerja/Perusahaan</label>
+      <textarea name="entry.461166113" class="auto-expand" required></textarea>
+
+      <button type="button" class="next" onclick="goNext(1)">Next</button>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="s2">
+	  <div class="case-box">
+        <b>INSTRUKSI UMUM:</b>
+        Anda akan mendapatkan skenario bisnis. Bacalah dengan seksama skenario tersebut, dan jawablah pertanyaan yang diberikan. Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 30 menit.
+      </div>
+
+      <label>Apakah instruksi dapat dipahami?</label>
+      <select name="entry.1049290635" required>
+        <option value="">Pilih</option>
+        <option>Ya</option>
+        <option>Tidak</option>
+      </select>
+
+      <button type="button" class="back" onclick="back(2)">Back</button>
+      <button type="button" class="next" onclick="goNext(2)">Next</button>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="s3">
+
+      <div class="case-box scenario-text">
+        <b>KASUS:</b><br><br>
+        <img src="https://lh3.googleusercontent.com/d/1QyvRD_HpxG1q8OBNEFOf2MU16ywQ8_Y1"
+        style="width:100%; border-radius:10px;"><br><br>
+		DanaCepat adalah perusahaan rintisan fintech yang bergerak di bidang peer-to-peer (P2P) lending, yaitu sistem pinjaman online yang mempertemukan pihak yang membutuhkan dana (peminjam) dengan pihak yang memiliki dana untuk dipinjamkan (pemberi pinjaman) melalui sebuah platform digital. Perusahaan ini berdiri pada tahun 2021 dengan tujuan memperluas akses pembiayaan bagi masyarakat yang belum sepenuhnya terlayani oleh perbankan konvensional, seperti pelaku UMKM mikro, pekerja lepas, karyawan kontrak, serta individu dengan riwayat kredit formal yang masih terbatas.
+		
+		Bagi sebagian kelompok tersebut, pengajuan pinjaman ke bank seringkali menghadapi kendala, baik dari sisi kelengkapan dokumen, kebutuhan jaminan, maupun proses yang lama. DanaCepat mencoba menawarkan alternatif yang lebih praktis dan fleksibel. Pengajuan pinjaman dilakukan sepenuhnya melalui aplikasi ponsel. Calon peminjam cukup mengunggah identitas diri serta beberapa data pendukung lainnya. Sistem kemudian melakukan penilaian kelayakan kredit secara otomatis berdasarkan data finansial dan aktivitas digital. Proses persetujuan (approval) rata-rata berlangsung 8–12 jam, dengan batas maksimal 24 jam. Jika disetujui, dana dapat ditransfer pada hari yang sama. Pinjaman yang ditawarkan berkisar antara Rp1.000.000 hingga Rp20.000.000 dengan tenor (jangka waktu pengembalian pinjaman) 1 hingga 12 bulan.
+		
+		Pada fase awal operasional hingga tahun 2023, perkembangan DanaCepat berlangsung relatif stabil. Jumlah pengguna meningkat secara bertahap, dan kualitas portofolio pinjaman masih terkendali. Tingkat keterlambatan pembayaran relatif rendah sehingga hubungan dengan pemberi pinjaman terjaga dengan baik. Pada periode ini, manajemen cenderung berhati-hati dalam menyetujui pinjaman dan menjaga keseimbangan antara pengeembangan usaha dan pengelolaan risiko.
+		
+		Perubahan mulai terjadi pada awal 2024 ketika DanaCepat memperoleh pendanaan baru dari investor sebesar Rp150 miliar. Tambahan modal tersebut membawa ekspektasi ekspansi usaha yang lebih besar. Manajemen kemudian memutuskan untuk mempercepat ekspansi. Anggaran pemasaran digital ditingkatkan hampir dua kali lipat. Kampanye dengan slogan “Cair Cepat Tanpa Ribet” diluncurkan secara luas melalui media sosial dan berbagai platform digital. Program referral dengan insentif tunai diperkenalkan untuk mendorong pengguna lama mengajak pengguna baru. DanaCepat juga menjalin kerjasama dengan beberapa platform e-commerce dan aplikasi pembayaran digital agar layanan mereka dapat diakses langsung dari ekosistem mitra tersebut.
+		
+		Dalam periode yang sama, perusahaan melonggarkan aturan persetujuan pinjaman dengan menurunkan batas minimal nilai kelayakan kredit dan lebih terbuka terhadap peminjam yang memiliki riwayat telat bayar. Tujuannya adalah agar lebih banyak pengajuan pinjaman dapat disetujui, sehingga jumlah pinjaman yang disalurkan bisa meningkat lebih cepat.
+		
+		Implementasi strategi tersebut dapat dilihat pada peningkatan signifikan di berbagai indikator. Total penyaluran dana pinjaman yang meningkat dari Rp350 miliar pada 2023 menjadi Rp720 miliar pada 2024. Hingga Semester I 2025, penyaluran dana telah mencapai Rp540 miliar. Jumlah peminjam aktif bertambah dari 29.500 orang pada 2023 menjadi 58.400 orang pada 2024, dan kembali naik menjadi 64.800 orang pada pertengahan 2025. Sejalan dengan itu, tingkat persetujuan pengajuan pinjaman ikut meningkat dari 61% pada 2023 menjadi 73% pada 2024, serta mencapai 79% pada Semester I 2025.
+		
+		Di balik kemajuan tersebut, mulai terlihat penurunan kualitas portofolio. Rasio kredit bermasalah meningkat dari 2,9% pada 2023 menjadi 5,6% pada 2024, dan mencapai 8,8% pada Semester I 2025. Jika dihitung dari total penyaluran Semester I 2025 sebesar Rp540 miliar, potensi nilai pinjaman bermasalah diperkirakan mencapai Rp47,5 miliar. Kenaikan ini berdampak pada meningkatnya biaya penagihan yang secara proporsi naik dari 7% (dari total pendapatan) di 2023, menjadi 20% pada Semester I 2025. Analisis internal menunjukkan bahwa sekitar 68% peningkatan kredit bermasalah berasal dari peminjam baru yang bergabung setelah kampanye promosi besar-besaran pada tahun 2024. 
+		
+		Dari sisi pemberi pinjaman juga mengalami perubahan dinamika. Jumlah pemberi pinjaman aktif meningkat dari 4.800 orang pada 2023 menjadi 9.200 orang pada 2024, namun turun menjadi 8.100 orang pada Semester I 2025. Survei internal menunjukkan bahwa sekitar 37% pemberi pinjaman menjadi lebih berhati-hati dalam menempatkan dana karena terus meningkatnya angka keterlambatan pembayaran. Dalam sistem P2P lending, kepercayaan pemberi pinjaman menjadi faktor kunci karena dana yang disalurkan berasal dari mereka.
+		
+		Di sisi peminjam, jumlah rata-rata keluhan meningkat signifikan, dari rata-rata 42 laporan per bulan (2023) menjadi 118 laporan per bulan (2025). Keluhan tersebut mencakup ketidakjelasan perhitungan bunga dan denda keterlambatan, perbedaan antara simulasi awal dan jumlah tagihan aktual, serta kesulitan memperoleh persetujuan penjadwalan ulang pembayaran. Selain itu, sebagian peminjam menyampaikan keluhan terkait metode komunikasi dalam proses penagihan, yang dinilai kurang empatik dan menimbulkan ketidaknyamanan. Sekitar 45% penanganan pinjaman bermasalah dilakukan oleh mitra eksternal, yang dalam praktiknya memerlukan pengawasan lebih ketat agar tetap sesuai dengan pedoman perusahaan dan prinsip perlindungan konsumen.
+		
+		Sebagai perusahaan yang berada di bawah pengawasan Otoritas Jasa Keuangan (OJK), DanaCepat menerima permintaan untuk menyampaikan evaluasi dan rencana penguatan manajemen risiko serta perlindungan konsumen dalam waktu enam bulan. Tidak ada sanksi yang diberikan oleh OJK, namun perusahaan diminta menunjukkan langkah perbaikan yang sistematis.
+		
+		Secara kumulatif, DanaCepat masih mencatat laba bersih sebesar Rp9 miliar pada 2023 dan Rp14 miliar pada 2024. Namun, pada Semester I 2025, laba bersih tercatat hanya mencapai Rp2,5 miliar. Meskipun jumlah penyaluran pinjaman terus meningkat, meningkatnya jumlah kredit bermasalah, meningkatnya biaya operasional, serta dinamika perilaku pemberi pinjaman dan peminjam menunjukkan perlunya perhatian serius dari pimpinan. Sebagai bagian dari manajemen DanaCepat, Anda diminta untuk menelaah situasi tersebut dan memberikan pandangan Anda.
+		<br><br>
+        <img src="https://lh3.googleusercontent.com/d/1VW7cROObjli2TjJkuI9R5SOWf3qbsIs3"
+        style="width:100%; border-radius:10px;"><br><br>
+      </div>
+
+      <label>1. Berdasarkan kasus DanaCepat di atas, identifikasi dan jelaskan akar permasalahan utama yang menyebabkan meningkatnya rasio kredit bermasalah, naiknya biaya penagihan, serta menurunnya laba bersih pada Semester I 2025!</label>
+      <textarea name="entry.964043886" class="auto-expand" required></textarea>
+
+      <label>2. Sebagai bagian dari manajemen DanaCepat, keputusan strategis apa yang perlu dipertimbangkan agar perusahaan tetap dapat beroperasi dalam 3–5 tahun ke depan di tengah permasalahan yang ada?</label>
+      <textarea name="entry.1432978201" class="auto-expand" required></textarea>
+
+      <label>3. Dalam konteks DanaCepat sebagai platform P2P lending yang melibatkan peminjam dan pemberi pinjaman, langkah apa yang seharusnya dilakukan untuk menjaga dan memulihkan kepercayaan kedua pihak tersebut, khususnya di tengah meningkatnya keluhan dan kekhawatiran terhadap kualitas portofolio?</label>
+      <textarea name="entry.92717384" class="auto-expand" required></textarea>
+
+      <label>4. Susunlah tahapan langkah yang terstruktur dan realistis untuk mengatasi permasalahan yang dimiliki DanaCepat. Jelaskan urutan prioritas tindakan yang Anda anggap tepat untuk dilakukan!</label>
+      <textarea name="entry.68306996" class="auto-expand" required></textarea>
+
+      <button type="button" class="back" onclick="back(3)">Back</button>
+      <button type="submit" class="submit">Submit</button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+
+// ================= STATE =================
+let timerStarted = false;
+let submitted = false;
+let duration = 30 * 60;
+
+let timerDisplay = document.getElementById("timer");
+
+// ================= SAVE ANSWERS =================
+function saveAnswers() {
+  const form = document.getElementById("form");
+  const data = {};
+
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+
+  sessionStorage.setItem("answers", JSON.stringify(data));
+}
+
+// ================= LOAD ANSWERS =================
+function loadAnswers() {
+  let saved = sessionStorage.getItem("answers");
+  if (!saved) return;
+
+  let data = JSON.parse(saved);
+
+  for (let key in data) {
+    let field = document.querySelector(`[name="${key}"]`);
+    if (field) field.value = data[key];
+  }
+}
+
+// ================= SAVE SECTION =================
+function saveSection(n) {
+  sessionStorage.setItem("currentSection", n);
+}
+
+// ================= LOAD SECTION =================
+function loadSection() {
+  let section = sessionStorage.getItem("currentSection");
+
+  if (!section) return;
+
+  document.getElementById("welcome").classList.remove("active");
+
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById("s" + i).classList.remove("active");
+  }
+
+  document.getElementById("s" + section).classList.add("active");
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="entry.1718822662"]').value || "anon";
+  const jabatan = document.querySelector('[name="entry.807897600"]').value || "unknown";
+
+  let base = (nama + "_" + jabatan)
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+
+  let id = base + "_" + Date.now();
+
+  sessionStorage.setItem("participant_id", id);
+
+  return id;
+}
+
+
+// ================= FIX HEIGHT AFTER LOAD =================
+function restoreTextareaHeight() {
+  document.querySelectorAll(".auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+}
+
+function validateSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  const inputs = section.querySelectorAll("input, select, textarea");
+
+  let valid = true;
+
+  inputs.forEach(input => {
+    if (input.hasAttribute("required") && !input.value.trim()) {
+      input.style.border = "2px solid red";
+      valid = false;
+    } else {
+      input.style.border = "";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua pertanyaan yang ada.");
+  }
+
+  return valid;
+}
+
+function goNext(current) {
+
+  // validasi dulu
+  if (!validateSection("s" + current)) return;
+
+  // kalau lolos, baru pindah
+  next(current);
+}
+
+// ================= NAVIGATION =================
+function next(current) {
+  saveAnswers();
+  saveSection(current + 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current + 1)).classList.add("active");
+}
+
+function back(current) {
+  saveAnswers();
+  saveSection(current - 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current - 1)).classList.add("active");
+}
+
+// ================= START =================
+function startAssessment() {
+  document.getElementById("welcome").classList.remove("active");
+  document.getElementById("s1").classList.add("active");
+
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (!savedStart) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+
+  saveSection(1);
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+// ================= GOOGLE FORM =================
+function generateFBZX() {
+  return Math.floor(Math.random() * 1e10).toString();
+}
+
+let fbzx = generateFBZX();
+document.querySelector('input[name="fbzx"]').value = fbzx;
+document.querySelector('input[name="draftResponse"]').value =
+  JSON.stringify([null, null, fbzx]);
+
+// ================= TIMER =================
+function updateTimer() {
+  if (!timerStarted || submitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    submitForm();
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+
+  timerDisplay.textContent =
+    m + ":" + (s < 10 ? "0"+s : s);
+}
+
+setInterval(updateTimer, 1000);
+
+
+let autoSaveTimer = null;
+
+function autoSaveToSheet() {
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+  const pid = getParticipantID();
+  formData.append("participant_id", pid);
+
+  fetch("https://script.google.com/macros/s/AKfycbxjBB6x0NixgaX4CPntUcYIZP-JjpcB-l6Z-KXl7AOtTSz1_Mq6CTmeYWPi8eS8lRZPvQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+
+}
+
+// ================= SUBMIT =================
+function submitForm() {
+  submitted = true;
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+// 🔥 tambahkan participant_id
+  const pid = getParticipantID();
+  formData.append("participant_id", pid);
+  formData.append("status", "SUBMITTED");
+    // 🔥 TAMPILKAN LOADING DULU
+  document.body.innerHTML = `
+    <div style="text-align:center;margin-top:100px">
+      <h2>Mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar</p>
+    </div>
+  `;
+  fetch("https://script.google.com/macros/s/AKfycbxjBB6x0NixgaX4CPntUcYIZP-JjpcB-l6Z-KXl7AOtTSz1_Mq6CTmeYWPi8eS8lRZPvQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  }).then(() => {
+
+    sessionStorage.clear();
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:100px">
+        <h2>Terima kasih</h2>
+        <p>Jawaban Anda telah terkirim</p>
+      </div>
+    `;
+  });
+}
+
+
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  submitForm();
+});
+
+// ================= AUTO SAVE =================
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+
+    saveAnswers();
+
+    // debounce (biar ga spam request)
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+
+  });
+});
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+// event untuk semua textarea
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+
+  // trigger awal (biar tidak gepeng saat reload)
+  autoExpand(el);
+});
+
+// ================= INIT =================
+window.onload = function() {
+  loadAnswers();
+
+  setTimeout(() => {
+    restoreTextareaHeight();
+  }, 50); // delay kecil biar layout settle
+
+  if (sessionStorage.getItem("startTime")) {
+    loadSection();
+  }
+};
+</script>
+
+</body>
+</html>
