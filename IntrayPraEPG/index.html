@@ -1,1 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Assessment</title>
 
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px;
+}
+
+.section { display: none; }
+.active { display: block; }
+
+#welcome {
+  text-align: center;
+  margin-top: 100px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+  transition: height 0.1s ease;
+}
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.next { background: #007bff; color: white; }
+.back { background: #aaa; color: white; }
+.submit { background: green; color: white; }
+.start { background: orange; color: white; }
+
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: red;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: none;
+}
+
+.case-box {
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.scenario-text {
+  white-space: pre-line;  
+  line-height: 1.6;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="timer"></div>
+
+<div class="container">
+
+  <!-- WELCOME -->
+  <div id="welcome" class="section active">
+    <h2>Selamat Datang</h2>
+    <p>Silakan klik tombol start di bawah untuk memulai asesmen. Asesmen akan berjalan selama 60 menit di mulai setelah anda mengklik tombol start. Jika waktu habis sebelum submit, maka jawaban anda akan tersubmit otomatis apa adanya.</p>
+    <button class="start" onclick="startAssessment()">Start</button>
+  </div>
+
+  <form id="form">
+
+    <!-- hidden fields -->
+    <input type="hidden" name="fvv" value="1">
+    <input type="hidden" name="fbzx">
+    <input type="hidden" name="pageHistory" value="0,1,2">
+    <input type="hidden" name="draftResponse">
+
+    <!-- SECTION 1 -->
+    <div class="section" id="s1">
+
+      <label>Nama Lengkap</label>
+      <textarea name="entry.1308659059" class="auto-expand" required></textarea>
+
+      <label>Level Jabatan</label>
+      <select name="entry.1840687058" required>
+        <option value="">Pilih</option>
+        <option>Pratama 1</option>
+        <option>Pratama 2</option>
+        <option>Pratama 3</option>
+      </select>
+
+      <label>Unit Kerja/Perusahaan</label>
+      <textarea name="entry.1575169067" class="auto-expand" required></textarea>
+
+      <button type="button" class="next" onclick="goNext(1)">Next</button>
+    </div>
+
+    <!-- SECTION 2 -->
+	<div class="section" id="s2">
+	  <div class="case-box">
+		<b>INSTRUKSI UMUM:</b><br><br>
+		Anda telah mendapatkan 6 (enam) dokumen yang terdiri atas 1 dokumen skenario & instruksi dan 5 dokumen kasus. Bacalah dengan seksama masing-masing dokumen tersebut dan tuliskan jawaban Anda pada kolom jawaban yang disediakan di Google Form ini. Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 60 menit untuk seluruh tugas.
+		Catatan: Kasus dapat dikerjakan secara tidak berurutan. Silakan mulai mengerjakan sesuai prioritas Anda atas kasus-kasus yang ada.<br><br>
+	  </div>
+	  
+	  <div class="case-box scenario-text">
+		<b>Skenario:</b><br><br>
+	Anda adalah Wening Endah Sulistya, Sekretaris Eksekutif yang baru menjabat selama 2 minggu di PT BANGUN JAYA, Konstruksi Jalan Raya (Area Kalimantan).
+
+	Tujuan Jabatan:
+	Mendukung Direktur Proyek dalam pengelolaan komunikasi, koordinasi operasional, serta pengambilan keputusan strategis terkait proyek pembangunan jalan raya, termasuk hubungan dengan klien, pemerintah daerah, dan stakeholder lainnya.
+
+	Tanggung Jawab Utama:
+	•	Mengelola komunikasi dengan klien (pemerintah, vendor, masyarakat)
+	•	Menyusun prioritas agenda Direktur
+	•	Menangani keluhan stakeholder proyek
+	•	Mengkoordinasikan informasi lintas divisi (teknik, operasional, legal)
+	•	Memberikan masukan administratif dan strategis kepada Direktur
+
+	Instruksi:
+	Hari ini tanggal 22 April 2026, pukul 08.30, Anda menerima beberapa pesan, meliputi email, memo, dan percakapan WA. Atasan Anda, Pak Maryono, Direktur Proyek, sedang menjalani perjalanan dinas ke luar pulau selama empat hari. Sehinnga anda harus memberikan respon terhadap pesan-pesan tersebut sesuai dengan kapasitas Anda sebagai seorang Sekretaris Eksekutif.
+	<br><br>
+	  </div>
+
+	  <div class="case-box">
+		<b>1. EMAIL KELUHAN WARGA SITEPU</b><br><br>
+		<img src="https://lh3.googleusercontent.com/d/1eN2vBVoI0BGvNSFLqFSsXmeGGodxKnIJ" style="width:100%; border-radius:10px;"><br><br>
+
+		<b>2. EMAIL PEMKOT SINGKAWANG<</b><br><br>
+		<img src="https://lh3.googleusercontent.com/d/12yubPjXJP5nzPeQEvz7fk8ios8oSnaaq" style="width:100%; border-radius:10px;"><br><br>
+
+		<b>3. WhatsApp Chat  PT ASPHALINDO NUSA (Supplier Aspal)</b><br><br>
+		<img src="https://lh3.googleusercontent.com/d/1pO_woymF5L8WnBNqspTf8D5xW34ZQwXn" style="width:100%; border-radius:10px;"><br><br>
+
+		<b>4. Memo Internal Manajer Teknik</b><br><br>
+		<img src="https://lh3.googleusercontent.com/d/1wm5Ia67AEcFFytgpxD6orFOooU0JTmR0" style="width:100%; border-radius:10px;"><br><br>
+
+		<b>5. Memo Internal Manajer Teknik</b><br><br>
+		<img src="https://lh3.googleusercontent.com/d/1UHyB5QlPQLOm3syWRZOdVeWfYmZlgF1u" style="width:100%; border-radius:10px;"><br><br>
+	  </div>
+
+	  <div class="case-box">
+		<b>INSTRUKSI:</b><br><br>
+		Kasus dapat dikerjakan secara tidak berurutan. Silakan mulai mengerjakan sesuai prioritas Anda atas kasus-kasus yang ada.<br><br>
+	  </div>
+
+	  <label>1. EMAIL KELUHAN WARGA SITEPU</label>
+	  <textarea name="entry.1515050802" class="auto-expand" required></textarea>
+
+	  <label>2. EMAIL PEMKOT SINGKAWANG</label>
+	  <textarea name="entry.1859838733" class="auto-expand" required></textarea>
+
+	  <label>3. WhatsApp Chat  PT ASPHALINDO NUSA (Supplier Aspal)</label>
+	  <textarea name="entry.955997989" class="auto-expand" required></textarea>
+
+	  <label>4. Memo Internal Manajer Teknik”</label>
+	  <textarea name="entry.1322377694" class="auto-expand" required></textarea>
+
+	  <label>5. Memo Internal Manajer Teknik</label>
+	  <textarea name="entry.1597251017" class="auto-expand" required></textarea>
+
+	  <button type="button" class="back" onclick="back(3)">Back</button>
+	  <button type="submit" class="submit">Submit</button>
+
+	</div>
+
+  </form>
+</div>
+
+<script>
+
+// ================= STATE =================
+let timerStarted = false;
+let submitted = false;
+let duration = 60 * 60;
+
+let timerDisplay = document.getElementById("timer");
+
+// ================= SAVE ANSWERS =================
+function saveAnswers() {
+  const form = document.getElementById("form");
+  const data = {};
+
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+
+  sessionStorage.setItem("answers", JSON.stringify(data));
+}
+
+// ================= LOAD ANSWERS =================
+function loadAnswers() {
+  let saved = sessionStorage.getItem("answers");
+  if (!saved) return;
+
+  let data = JSON.parse(saved);
+
+  for (let key in data) {
+    let field = document.querySelector(`[name="${key}"]`);
+    if (field) field.value = data[key];
+  }
+}
+
+// ================= SAVE SECTION =================
+function saveSection(n) {
+  sessionStorage.setItem("currentSection", n);
+}
+
+// ================= LOAD SECTION =================
+function loadSection() {
+  let section = sessionStorage.getItem("currentSection");
+
+  if (!section) return;
+
+  document.getElementById("welcome").classList.remove("active");
+
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById("s" + i).classList.remove("active");
+  }
+
+  document.getElementById("s" + section).classList.add("active");
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="entry.1308659059"]').value || "anon";
+  const jabatan = document.querySelector('[name="entry.1840687058"]').value || "unknown";
+
+  let base = (nama + "_" + jabatan)
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+
+  let id = base + "_" + Date.now();
+
+  sessionStorage.setItem("participant_id", id);
+
+  return id;
+}
+
+
+// ================= FIX HEIGHT AFTER LOAD =================
+function restoreTextareaHeight() {
+  document.querySelectorAll(".auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+}
+
+function validateSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  const inputs = section.querySelectorAll("input, select, textarea");
+
+  let valid = true;
+
+  inputs.forEach(input => {
+    if (input.hasAttribute("required") && !input.value.trim()) {
+      input.style.border = "2px solid red";
+      valid = false;
+    } else {
+      input.style.border = "";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua pertanyaan yang ada.");
+  }
+
+  return valid;
+}
+
+function goNext(current) {
+
+  // validasi dulu
+  if (!validateSection("s" + current)) return;
+
+  // kalau lolos, baru pindah
+  next(current);
+}
+
+// ================= NAVIGATION =================
+function next(current) {
+  saveAnswers();
+  saveSection(current + 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current + 1)).classList.add("active");
+}
+
+function back(current) {
+  saveAnswers();
+  saveSection(current - 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current - 1)).classList.add("active");
+}
+
+// ================= START =================
+function startAssessment() {
+  document.getElementById("welcome").classList.remove("active");
+  document.getElementById("s1").classList.add("active");
+
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (!savedStart) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+
+  saveSection(1);
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+// ================= GOOGLE FORM =================
+function generateFBZX() {
+  return Math.floor(Math.random() * 1e10).toString();
+}
+
+let fbzx = generateFBZX();
+document.querySelector('input[name="fbzx"]').value = fbzx;
+document.querySelector('input[name="draftResponse"]').value =
+  JSON.stringify([null, null, fbzx]);
+
+// ================= TIMER =================
+function updateTimer() {
+  if (!timerStarted || submitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    submitForm();
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+
+  timerDisplay.textContent =
+    m + ":" + (s < 10 ? "0"+s : s);
+}
+
+setInterval(updateTimer, 1000);
+
+
+let autoSaveTimer = null;
+
+function autoSaveToSheet() {
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+  const pid = getParticipantID();
+  formData.append("participant_id", pid);
+
+  fetch("https://script.google.com/macros/s/AKfycbycsVmJE_X-SKzhkNBFbto6oo5-nBEir1s-32kVn7ETxf6c1ZDiT_-xxF6ff1mlGuLPVQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+
+}
+
+// ================= SUBMIT =================
+function submitForm() {
+  submitted = true;
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+// 🔥 tambahkan participant_id
+  const pid = getParticipantID();
+  formData.append("participant_id", pid);
+  formData.append("status", "SUBMITTED");
+    // 🔥 TAMPILKAN LOADING DULU
+  document.body.innerHTML = `
+    <div style="text-align:center;margin-top:100px">
+      <h2>Mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar</p>
+    </div>
+  `;
+  fetch("https://script.google.com/macros/s/AKfycbycsVmJE_X-SKzhkNBFbto6oo5-nBEir1s-32kVn7ETxf6c1ZDiT_-xxF6ff1mlGuLPVQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  }).then(() => {
+
+    sessionStorage.clear();
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:100px">
+        <h2>Terima kasih</h2>
+        <p>Jawaban Anda telah terkirim</p>
+      </div>
+    `;
+  });
+}
+
+
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  submitForm();
+});
+
+// ================= AUTO SAVE =================
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+
+    saveAnswers();
+
+    // debounce (biar ga spam request)
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+
+  });
+});
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+// event untuk semua textarea
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+
+  // trigger awal (biar tidak gepeng saat reload)
+  autoExpand(el);
+});
+
+// ================= INIT =================
+window.onload = function() {
+  loadAnswers();
+
+  setTimeout(() => {
+    restoreTextareaHeight();
+  }, 50); // delay kecil biar layout settle
+
+  if (sessionStorage.getItem("startTime")) {
+    loadSection();
+  }
+};
+</script>
+
+</body>
+</html>
