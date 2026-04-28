@@ -397,7 +397,12 @@ function autoSaveToSheet() {
   const pid = getParticipantID();
   formData.append("participant_id", pid);
 
-  fetch("https://script.google.com/macros/s/AKfycbxsZCua4MbjvrJt77qnKink0IZSjvK28IL_mBoLxUVrsqr9NyZ06pZdSRZ45ZgiPLWP/exec", {
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (savedStart) {
+    formData.append("start_time", new Date(parseInt(savedStart)));
+  }
+  fetch("https://script.google.com/macros/s/AKfycbxzGK3DUl1dnmQfHoj9OqzcGHCC6x7-upDA5MynODaX1q5ouXXf0zWMgKyogo80mQeD/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
@@ -406,24 +411,38 @@ function autoSaveToSheet() {
 }
 
 // ================= SUBMIT =================
+// ================= SUBMIT =================
 function submitForm() {
   submitted = true;
 
   const form = document.getElementById("form");
   const formData = new FormData(form);
 
-// 🔥 tambahkan participant_id
   const pid = getParticipantID();
+
   formData.append("participant_id", pid);
   formData.append("status", "SUBMITTED");
-    // 🔥 TAMPILKAN LOADING DULU
+
+  // ambil startTime yang SUDAH ADA (jangan kirim ulang startTime)
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (savedStart) {
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining);
+  }
+
+  // 🔥 loading screen
   document.body.innerHTML = `
     <div style="text-align:center;margin-top:100px">
       <h2>Mengirim jawaban...</h2>
       <p>Mohon tunggu sebentar</p>
     </div>
   `;
-  fetch("https://script.google.com/macros/s/AKfycbxsZCua4MbjvrJt77qnKink0IZSjvK28IL_mBoLxUVrsqr9NyZ06pZdSRZ45ZgiPLWP/exec", {
+
+  fetch("https://script.google.com/macros/s/AKfycbxzGK3DUl1dnmQfHoj9OqzcGHCC6x7-upDA5MynODaX1q5ouXXf0zWMgKyogo80mQeD/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
