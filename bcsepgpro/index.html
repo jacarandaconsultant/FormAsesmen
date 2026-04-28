@@ -1,1 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Assessment</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px;
+}
+
+.section { display: none; }
+.active { display: block; }
+
+#welcome {
+  text-align: center;
+  margin-top: 100px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+  transition: height 0.1s ease;
+}
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.next { background: #007bff; color: white; }
+.back { background: #aaa; color: white; }
+.submit { background: green; color: white; }
+.start { background: orange; color: white; }
+
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: red;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: none;
+}
+
+.case-box {
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.scenario-text {
+  white-space: pre-line;  
+  line-height: 1.6;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="timer"></div>
+
+<div class="container">
+
+  <!-- WELCOME -->
+  <div id="welcome" class="section active">
+    <h2>Selamat Datang</h2>
+    <p>Silakan klik tombol start di bawah untuk memulai asesmen. Asesmen akan berjalan selama 30 menit di mulai setelah anda mengklik tombol start. Jika waktu habis sebelum submit, maka jawaban anda akan tersubmit otomatis apa adanya.</p>
+    <button class="start" onclick="startAssessment()">Start</button>
+  </div>
+
+  <form id="form">
+
+    <!-- hidden fields -->
+    <input type="hidden" name="fvv" value="1">
+    <input type="hidden" name="fbzx">
+    <input type="hidden" name="pageHistory" value="0,1,2">
+    <input type="hidden" name="draftResponse">
+
+    <!-- SECTION 1 -->
+    <div class="section" id="s1">
+
+      <label>Nama Lengkap</label>
+      <textarea name="nama" class="auto-expand" required></textarea>
+
+      <label>Level Jabatan</label>
+      <select name="level" required>
+        <option value="">Pilih</option>
+        <option>Profesional 1</option>
+        <option>Profesional 2</option>
+        <option>Profesional 3</option>
+      </select>
+
+      <label>Unit Kerja/Perusahaan</label>
+      <textarea name="unit" class="auto-expand" required></textarea>
+
+      <button type="button" class="next" onclick="goNext(1)">Next</button>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="s2">
+	  <div class="case-box">
+        <b>INSTRUKSI UMUM:</b>
+        Anda akan mendapatkan skenario bisnis. Bacalah dengan seksama skenario tersebut, dan jawablah pertanyaan yang diberikan. Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 30 menit.
+      </div>
+
+      <label>Apakah instruksi dapat dipahami?</label>
+      <select name="instruksi" required>
+        <option value="">Pilih</option>
+        <option>Ya</option>
+        <option>Tidak</option>
+      </select>
+
+      <button type="button" class="back" onclick="back(2)">Back</button>
+      <button type="button" class="next" onclick="goNext(2)">Next</button>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="s3">
+
+      <div class="case-box scenario-text">
+        <b>KASUS:</b><br><br>
+        <img src="https://lh3.googleusercontent.com/d/11LuXnNRRpo7wrK92N55we25ivE8YPmJ3" style="width:100%; border-radius:10px;"><br><br>
+		Joglingko merupakan Badan Usaha Milik Daerah (BUMD) yang bergerak di bidang transportasi publik dan telah beroperasi selama lebih dari 10 tahun. Perusahaan ini mengelola layanan bus kota dan angkutan feeder yang melayani mobilitas masyarakat perkotaan, khususnya pekerja dan pelajar. Sebagai BUMD, Joglingko tidak hanya dituntut untuk mencapai kinerja operasional yang efisien, tetapi juga memastikan aksesibilitas dan keterjangkauan layanan bagi seluruh lapisan masyarakat.
+		
+		Dalam dua tahun terakhir, pemerintah daerah mendorong Joglingko untuk melakukan transformasi layanan melalui penerapan sistem tiket elektronik terintegrasi (e-ticketing) yang akan dilaksanakan secara bertahap. Sistem ini dapat terhubung dengan aplikasi berbasis smartphone dan diharapkan dapat meningkatkan transparansi pendapatan, mempermudah proses pembayaran, serta menyediakan data perjalanan setiap pengguna sebagai dasar perencanaan dan evaluasi layanan Joglingko ke depan.
+		
+		Pada tahap awal implementasi, e-ticketing mendapatkan respons positif dari kelompok pengguna muda dan pekerja kantoran yang terbiasa menggunakan teknologi digital. Namun, seiring dengan perluasan penerapan sistem ke seluruh armada, mulai muncul berbagai permasalahan. Sebagian besar pengguna lansia, pelajar, dan masyarakat berpenghasilan rendah mengeluhkan kesulitan dalam menggunakan aplikasi, serta keterbatasan akses terhadap smartphone dan jaringan internet. Kondisi ini menyebabkan antrean panjang di beberapa halte karena penumpang membutuhkan bantuan petugas untuk melakukan proses pembayaran sebelum naik kendaraan..<br><br>
+        <img src="https://lh3.googleusercontent.com/d/1weifjDtt-S-olDM2Y_qHEAkkMR2AKPVw" style="width:100%; border-radius:10px;"><br><br>
+		Di sisi internal organisasi, pengemudi dan petugas lapangan merasa terbebani dengan adanya tanggung jawab tambahan untuk membantu penumpang memahami sistem e-ticketing, sementara pelatihan dan penyesuaian beban kerja belum dilakukan secara memadai. Dampaknya, waktu berhenti kendaraan di halte menjadi lebih lama dan jadwal operasional semakin sering mengalami keterlambatan. Laporan internal menunjukkan bahwa tingkat ketepatan waktu layanan Joglingko justru menurun sejak sistem e-ticketing diberlakukan secara penuh.<br><br>
+        <img src="https://lh3.googleusercontent.com/d/1fcayS5OIod1HhMDOjLsj-DW2Sq6pXxAZ" style="width:100%; border-radius:10px;"><br><br>
+		Situasi ini semakin kompleks ketika muncul pemberitaan media yang menyoroti dugaan pemborosan anggaran dalam pengadaan sistem e-ticketing, meskipun belum ditemukan bukti pelanggaran yang jelas. Isu tersebut dengan cepat menjadi perhatian DPRD dan memunculkan tekanan politik terhadap manajemen Joglingko untuk memberikan klarifikasi dan pertanggungjawaban. Pada saat yang bersamaan, layanan transportasi daring (ride-hailing) yang telah lama beroperasi di kota tersebut semakin populer karena menawarkan kemudahan pembayaran, fleksibilitas rute, serta dinilai lebih mampu menyesuaikan layanan dengan kebutuhan dan preferensi pengguna. Berdasarkan data publik dan laporan media, jumlah perjalanan harian layanan ride-hailing meningkat sekitar 20–25% pada periode yg sama. Hal ini membuat sebagian masyarakat mulai membandingkan dan lebih melirik transportasi daring dibandingkan transportasi publik.
+		
+		Alih-alih melakukan evaluasi menyeluruh terhadap dampak kebijakan yang telah diterapkan, pimpinan Joglingko tetap bersikeras mempertahankan penerapan e-ticketing secara penuh dengan alasan bahwa proyek tersebut merupakan program strategis pemerintah daerah yang tidak boleh gagal. Pernyataan resmi kepada masyarakat disampaikan oleh jajaran direksi melalui divisi komunikasi perusahaan, yang menekankan bahwa masyarakat perlu “beradaptasi dengan kemajuan teknologi” sebagai bagian dari modernisasi layanan transportasi. Namun, pernyataan ini tidak diikuti dengan langkah konkret untuk mengatasi kesulitan pengguna di lapangan, sehingga memunculkan persepsi bahwa Joglingko kurang peka terhadap kondisi dan kebutuhan masyarakat yang dilayaninya.
+		
+		Sebagai Direktur Operasional Joglingko, Anda diminta untuk membantu perusahaan memahami situasi yang sedang terjadi, menyeimbangkan tuntutan pelayanan publik dengan tekanan politik dan kebijakan pemerintah daerah, serta merumuskan langkah-langkah yang tepat agar layanan transportasi tetap berjalan efektif, inklusif, dan berkelanjutan.<br><br>
+      </div>
+      <label>1. Berdasarkan kasus di atas, identifikasi dan jelaskan akar permasalahan utama yang menyebabkan menurunnya kualitas layanan Joglingko setelah penerapan sistem e-ticketing!</label>
+      <textarea name="q1" class="auto-expand" required></textarea>
+
+      <label>2. Sebagai Direktur Operasional, keputusan strategis apa yang perlu dipertimbangkan agar Joglingko dapat menjaga keberlanjutan layanan transportasi publik dalam jangka panjang?</label>
+      <textarea name="q2" class="auto-expand" required></textarea>
+
+      <label>3. Dalam konteks Joglingko sebagai penyedia layanan publik, langkah apa yang seharusnya dilakukan untuk merespons kebutuhan dan keterbatasan pengguna, khususnya lansia, pelajar, dan masyarakat berpenghasilan rendah, agar kepercayaan masyarakat terhadap layanan Joglingko tetap terjaga?</label>
+      <textarea name="q3" class="auto-expand" required></textarea>
+
+      <label>4. Susunlah tahapan langkah yang terstruktur dan realistis untuk mengatasi permasalahan Joglingko, mulai dari penanganan operasional jangka pendek, perbaikan internal organisasi, hingga evaluasi kebijakan penerapan e-ticketing dalam jangka menengah dan panjang!</label>
+      <textarea name="q4" class="auto-expand" required></textarea>
+
+      <button type="button" class="back" onclick="back(3)">Back</button>
+      <button type="submit" class="submit">Submit</button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+
+// ================= STATE =================
+let timerStarted = false;
+let submitted = false;
+let duration = 30 * 60;
+
+let timerDisplay = document.getElementById("timer");
+
+// ================= SAVE ANSWERS =================
+function saveAnswers() {
+  const form = document.getElementById("form");
+  const data = {};
+
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+
+  sessionStorage.setItem("answers", JSON.stringify(data));
+}
+
+// ================= LOAD ANSWERS =================
+function loadAnswers() {
+  let saved = sessionStorage.getItem("answers");
+  if (!saved) return;
+
+  let data = JSON.parse(saved);
+
+  for (let key in data) {
+    let field = document.querySelector(`[name="${key}"]`);
+    if (field) field.value = data[key];
+  }
+}
+
+// ================= SAVE SECTION =================
+function saveSection(n) {
+  sessionStorage.setItem("currentSection", n);
+}
+
+// ================= LOAD SECTION =================
+function loadSection() {
+  let section = sessionStorage.getItem("currentSection");
+
+  if (!section) return;
+
+  document.getElementById("welcome").classList.remove("active");
+
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById("s" + i).classList.remove("active");
+  }
+
+  document.getElementById("s" + section).classList.add("active");
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="nama"]').value || "anon";
+  const jabatan = document.querySelector('[name="level"]').value || "unknown";
+
+  let base = (nama + "_" + jabatan)
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+
+  let id = base + "_" + Date.now();
+
+  sessionStorage.setItem("participant_id", id);
+
+  return id;
+}
+
+
+// ================= FIX HEIGHT AFTER LOAD =================
+function restoreTextareaHeight() {
+  document.querySelectorAll(".auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+}
+
+function validateSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  const inputs = section.querySelectorAll("input, select, textarea");
+
+  let valid = true;
+
+  inputs.forEach(input => {
+    if (input.hasAttribute("required") && !input.value.trim()) {
+      input.style.border = "2px solid red";
+      valid = false;
+    } else {
+      input.style.border = "";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua pertanyaan yang ada.");
+  }
+
+  return valid;
+}
+
+function goNext(current) {
+
+  // validasi dulu
+  if (!validateSection("s" + current)) return;
+
+  // kalau lolos, baru pindah
+  next(current);
+}
+
+// ================= NAVIGATION =================
+function next(current) {
+  saveAnswers();
+  saveSection(current + 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current + 1)).classList.add("active");
+}
+
+function back(current) {
+  saveAnswers();
+  saveSection(current - 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current - 1)).classList.add("active");
+}
+
+// ================= START =================
+function startAssessment() {
+  document.getElementById("welcome").classList.remove("active");
+  document.getElementById("s1").classList.add("active");
+
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (!savedStart) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+
+  saveSection(1);
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+// ================= GOOGLE FORM =================
+function generateFBZX() {
+  return Math.floor(Math.random() * 1e10).toString();
+}
+
+let fbzx = generateFBZX();
+document.querySelector('input[name="fbzx"]').value = fbzx;
+document.querySelector('input[name="draftResponse"]').value =
+  JSON.stringify([null, null, fbzx]);
+
+// ================= TIMER =================
+function updateTimer() {
+  if (!timerStarted || submitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    submitForm();
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+
+  timerDisplay.textContent =
+    m + ":" + (s < 10 ? "0"+s : s);
+}
+
+setInterval(updateTimer, 1000);
+
+
+let autoSaveTimer = null;
+
+function autoSaveToSheet() {
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+  const pid = getParticipantID();
+  formData.append("participant_id", pid);
+
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (savedStart) {
+    formData.append("start_time", new Date(parseInt(savedStart)));
+  }
+  fetch("https://script.google.com/macros/s/AKfycbzI2zyQqm2y08gAI-e55FSMh5Pv44goCU90hADEOS0rqatA-N4nD-wAmNxJ72Kpp9e_HQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+
+}
+
+// ================= SUBMIT =================
+// ================= SUBMIT =================
+function submitForm() {
+  submitted = true;
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+  const pid = getParticipantID();
+
+  formData.append("participant_id", pid);
+  formData.append("status", "SUBMITTED");
+
+  // ambil startTime yang SUDAH ADA (jangan kirim ulang startTime)
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (savedStart) {
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining);
+  }
+
+  // 🔥 loading screen
+  document.body.innerHTML = `
+    <div style="text-align:center;margin-top:100px">
+      <h2>Mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar</p>
+    </div>
+  `;
+
+  fetch("https://script.google.com/macros/s/AKfycbzI2zyQqm2y08gAI-e55FSMh5Pv44goCU90hADEOS0rqatA-N4nD-wAmNxJ72Kpp9e_HQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  }).then(() => {
+
+    sessionStorage.clear();
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:100px">
+        <h2>Terima kasih</h2>
+        <p>Jawaban Anda telah terkirim</p>
+      </div>
+    `;
+  });
+}
+
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  submitForm();
+});
+
+// ================= AUTO SAVE =================
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+
+    saveAnswers();
+
+    // debounce (biar ga spam request)
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+
+  });
+});
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+// event untuk semua textarea
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+
+  // trigger awal (biar tidak gepeng saat reload)
+  autoExpand(el);
+});
+
+// ================= INIT =================
+window.onload = function() {
+  loadAnswers();
+
+  setTimeout(() => {
+    restoreTextareaHeight();
+  }, 50); // delay kecil biar layout settle
+
+  if (sessionStorage.getItem("startTime")) {
+    loadSection();
+  }
+};
+</script>
+
+</body>
+</html>
 
