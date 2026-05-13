@@ -292,7 +292,7 @@ function sendBehavior(type) {
   formData.append("behavior", type);
   formData.append("timestamp_client", new Date().toString());
 
-  fetch("https://script.google.com/macros/s/AKfycbzqX6CmPbcniWEt2hBiyGZY4BK_8koIoHWzTs39QAMgyqh7OAiay7NGJhcE15WzJaoF/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbz--DeNGWW4_DRkX4BXpzkD4ozfwEYV-diwgjfoVGzPFKOrHLGAsQaBzfrxAVaCLwQP/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
@@ -422,7 +422,7 @@ function autoSaveToSheet() {
   if (savedStart) {
     formData.append("start_time", new Date(parseInt(savedStart)));
   }
-  fetch("https://script.google.com/macros/s/AKfycbzqX6CmPbcniWEt2hBiyGZY4BK_8koIoHWzTs39QAMgyqh7OAiay7NGJhcE15WzJaoF/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbz--DeNGWW4_DRkX4BXpzkD4ozfwEYV-diwgjfoVGzPFKOrHLGAsQaBzfrxAVaCLwQP/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
@@ -462,7 +462,7 @@ function submitForm() {
     </div>
   `;
 
-  fetch("https://script.google.com/macros/s/AKfycbzqX6CmPbcniWEt2hBiyGZY4BK_8koIoHWzTs39QAMgyqh7OAiay7NGJhcE15WzJaoF/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbz--DeNGWW4_DRkX4BXpzkD4ozfwEYV-diwgjfoVGzPFKOrHLGAsQaBzfrxAVaCLwQP/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
