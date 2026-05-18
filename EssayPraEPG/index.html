@@ -155,6 +155,10 @@ let duration = 30 * 60;
 
 let timerDisplay = document.getElementById("timer");
 
+let tabSwitchCount = 0;
+let lastActivity = Date.now();
+let assessmentStarted = false;
+
 // ================= SAVE ANSWERS =================
 function saveAnswers() {
   const form = document.getElementById("form");
@@ -223,6 +227,22 @@ function getParticipantID() {
   return id;
 }
 
+function sendBehavior(type) {
+  if (!assessmentStarted) return; // 🔥 penting
+
+  const formData = new FormData();
+
+  formData.append("participant_id", getParticipantID());
+  formData.append("behavior", type);
+  formData.append("timestamp_client", new Date().toString());
+
+  fetch("https://script.google.com/macros/s/AKfycbzf-BOnKObWuPi1BeE93QO2al3HuAXENNueWzAlg4nGToY5E844GsBVq99pX5MtG2uQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+}
+
 
 // ================= FIX HEIGHT AFTER LOAD =================
 function restoreTextareaHeight() {
@@ -281,6 +301,7 @@ function back(current) {
 
 // ================= START =================
 function startAssessment() {
+  assessmentStarted = true;
   document.getElementById("welcome").classList.remove("active");
   document.getElementById("s1").classList.add("active");
 
@@ -346,7 +367,7 @@ function autoSaveToSheet() {
   if (savedStart) {
     formData.append("start_time", new Date(parseInt(savedStart)));
   }
-  fetch("https://script.google.com/macros/s/AKfycbyKorUdBCbD6zIW9rxSDmDHjDKx2_9j9UA8AIeVjZIRewACRlskswK0BPidGPo64ryt/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzf-BOnKObWuPi1BeE93QO2al3HuAXENNueWzAlg4nGToY5E844GsBVq99pX5MtG2uQ/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
@@ -386,7 +407,7 @@ function submitForm() {
     </div>
   `;
 
-  fetch("https://script.google.com/macros/s/AKfycbyKorUdBCbD6zIW9rxSDmDHjDKx2_9j9UA8AIeVjZIRewACRlskswK0BPidGPo64ryt/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbzf-BOnKObWuPi1BeE93QO2al3HuAXENNueWzAlg4nGToY5E844GsBVq99pX5MtG2uQ/exec", {
     method: "POST",
     mode: "no-cors",
     body: formData
@@ -451,6 +472,43 @@ window.onload = function() {
     loadSection();
   }
 };
+
+// DETEKSI TAB SWITCH
+// ======================
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) {
+    tabSwitchCount++;
+    sendBehavior("TAB_HIDDEN");
+  } else {
+    sendBehavior("TAB_ACTIVE");
+  }
+});
+
+// ======================
+// DETEKSI WINDOW FOCUS
+// ======================
+window.addEventListener("blur", function () {
+  sendBehavior("WINDOW_BLUR");
+});
+
+window.addEventListener("focus", function () {
+  sendBehavior("WINDOW_FOCUS");
+});
+
+// ======================
+// DETEKSI AKTIVITAS USER
+// ======================
+document.addEventListener("mousemove", () => lastActivity = Date.now());
+document.addEventListener("keydown", () => lastActivity = Date.now());
+
+setInterval(() => {
+  let idleTime = (Date.now() - lastActivity) / 1000;
+
+  if (idleTime > 30) {
+    sendBehavior("IDLE_" + Math.floor(idleTime));
+  }
+}, 5000);
+
 </script>
 
 </body>
