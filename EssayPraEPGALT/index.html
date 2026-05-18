@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Assessment</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px;
+}
+
+.section { display: none; }
+.active { display: block; }
+
+#welcome {
+  text-align: center;
+  margin-top: 100px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+  line-height: 1.5;
+  font-family: Arial, sans-serif;
+  transition: height 0.1s ease;
+}
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.next { background: #007bff; color: white; }
+.back { background: #aaa; color: white; }
+.submit { background: green; color: white; }
+.start { background: orange; color: white; }
+
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: red;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: none;
+}
+
+.case-box {
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="timer"></div>
+
+<div class="container">
+
+  <!-- WELCOME -->
+  <div id="welcome" class="section active">
+    <h2>Selamat Datang</h2>
+    <p>Silakan klik tombol start di bawah untuk memulai asesmen. Asesmen akan berjalan selama 30 menit di mulai setelah anda mengklik tombol start. Jika waktu habis sebelum submit, maka jawaban anda akan tersubmit otomatis apa adanya.</p>
+    <button class="start" onclick="startAssessment()">Start</button>
+  </div>
+
+  <form id="form">
+
+    <!-- hidden fields -->
+    <input type="hidden" name="fvv" value="1">
+    <input type="hidden" name="fbzx">
+    <input type="hidden" name="pageHistory" value="0,1,2">
+    <input type="hidden" name="draftResponse">
+
+    <!-- SECTION 1 -->
+    <div class="section" id="s1">
+
+      <label>Nama Lengkap</label>
+      <textarea name="entry.1768343990" class="auto-expand" required></textarea>
+
+      <label>Level Jabatan</label>
+      <select name="entry.1902998976" required>
+        <option value="">Pilih</option>
+        <option>Pratama 1</option>
+        <option>Pratama 2</option>
+        <option>Pratama 3</option>
+      </select>
+
+      <button type="button" class="next" onclick="goNext(1)">Next</button>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="s2">
+	  <div class="case-box">
+        <b>INSTRUKSI UMUM:</b><br><br>
+        <b>Jawablah 5 pertanyaan di bawah ini berdasarkan situasi kerja Anda dalam waktu 6 bulan terakhir!</b><br><br>
+      </div>
+      
+      <label>1. Uraikan dengan singkat jabatan Anda dan tugas-tugas inti yang menjadi tanggung jawab Anda!</label>
+      <textarea name="entry.203541215" class="auto-expand" required></textarea>
+
+      <label>2. Pernahkah Anda berada dalam situasi kerja yang tidak sepenuhnya berjalan sesuai harapan? Gambarkan situasi yang Anda hadapi, hal yang perlu Anda capai saat itu, bagaimana Anda menyikapinya, serta hasil yang diperoleh.</label>
+      <textarea name="entry.2075665236" class="auto-expand" required></textarea>
+
+      <label>3. Ceritakan pengalaman Anda ketika menemui tuntutan untuk menggunakan alat atau sistem teknologi baru dalam pekerjaan. Ceritakan pengalaman tersebut, apa yang perlu Anda pahami, bagaimana Anda menyesuaikan diri, dan bagaimana pengaruhnya terhadap penyelesaian tugas Anda.</label>
+      <textarea name="entry.1372295793" class="auto-expand" required></textarea>
+
+      <label>4. Kapan Anda menghadapi situasi di mana keterlibatan atau kepatuhan rekan kerja tidak sepenuhnya sesuai dengan kebutuhan tugas? Uraikan kondisi yang terjadi, apa yang perlu dijaga atau dicapai, bagaimana Anda menyikapinya, serta dampaknya terhadap penyelesaian pekerjaan.</label>
+      <textarea name="entry.1922111483" class="auto-expand" required></textarea>
+
+      <label>5. Bagaimana Anda melihat keterkaitan antara aktivitas kerja Anda dengan arah atau tujuan perusahaan yang lebih luas? Gambarkan situasinya, fokus yang Anda pegang, langkah yang Anda ambil, dan bagaimana hal tersebut berkontribusi terhadap hasil yang ingin dicapai.</label>
+      <textarea name="entry.1368084319" class="auto-expand" required></textarea>
+	  
+      <button type="button" class="back" onclick="back(3)">Back</button>
+      <button type="submit" class="submit">Submit</button>
+    </div>
+
+  </form>
+</div>
+
+<script>
+
+// ================= STATE =================
+let timerStarted = false;
+let submitted = false;
+let duration = 50 * 60;
+
+let timerDisplay = document.getElementById("timer");
+
+let tabSwitchCount = 0;
+let lastActivity = Date.now();
+let assessmentStarted = false;
+
+// ================= SAVE ANSWERS =================
+function saveAnswers() {
+  const form = document.getElementById("form");
+  const data = {};
+
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+
+  sessionStorage.setItem("answers", JSON.stringify(data));
+}
+
+// ================= LOAD ANSWERS =================
+function loadAnswers() {
+  let saved = sessionStorage.getItem("answers");
+  if (!saved) return;
+
+  let data = JSON.parse(saved);
+
+  for (let key in data) {
+    let field = document.querySelector(`[name="${key}"]`);
+    if (field) field.value = data[key];
+  }
+}
+
+// ================= SAVE SECTION =================
+function saveSection(n) {
+  sessionStorage.setItem("currentSection", n);
+}
+
+// ================= LOAD SECTION =================
+function loadSection() {
+  let section = sessionStorage.getItem("currentSection");
+
+  if (!section) return;
+
+  document.getElementById("welcome").classList.remove("active");
+
+  for (let i = 1; i <= 2; i++) {
+    document.getElementById("s" + i).classList.remove("active");
+  }
+
+  document.getElementById("s" + section).classList.add("active");
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="entry.1768343990"]').value || "anon";
+  const jabatan = document.querySelector('[name="entry.1902998976"]').value || "unknown";
+
+  let base = (nama + "_" + jabatan)
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+
+  let id = base + "_" + Date.now();
+
+  sessionStorage.setItem("participant_id", id);
+
+  return id;
+}
+
+function sendBehavior(type) {
+  if (!assessmentStarted) return; // 🔥 penting
+
+  const formData = new FormData();
+
+  formData.append("participant_id", getParticipantID());
+  formData.append("behavior", type);
+  formData.append("timestamp_client", new Date().toString());
+
+  fetch("https://script.google.com/macros/s/AKfycbzf-BOnKObWuPi1BeE93QO2al3HuAXENNueWzAlg4nGToY5E844GsBVq99pX5MtG2uQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+}
+
+
+// ================= FIX HEIGHT AFTER LOAD =================
+function restoreTextareaHeight() {
+  document.querySelectorAll(".auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+}
+
+function validateSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  const inputs = section.querySelectorAll("input, select, textarea");
+
+  let valid = true;
+
+  inputs.forEach(input => {
+    if (input.hasAttribute("required") && !input.value.trim()) {
+      input.style.border = "2px solid red";
+      valid = false;
+    } else {
+      input.style.border = "";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua pertanyaan yang ada.");
+  }
+
+  return valid;
+}
+
+function goNext(current) {
+
+  // validasi dulu
+  if (!validateSection("s" + current)) return;
+
+  // kalau lolos, baru pindah
+  next(current);
+}
+
+// ================= NAVIGATION =================
+function next(current) {
+  saveAnswers();
+  saveSection(current + 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current + 1)).classList.add("active");
+}
+
+function back(current) {
+  saveAnswers();
+  saveSection(current - 1);
+
+  document.getElementById("s" + current).classList.remove("active");
+  document.getElementById("s" + (current - 1)).classList.add("active");
+}
+
+// ================= START =================
+function startAssessment() {
+  assessmentStarted = true;
+  document.getElementById("welcome").classList.remove("active");
+  document.getElementById("s1").classList.add("active");
+
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (!savedStart) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+
+  saveSection(1);
+
+  timerStarted = true;
+  timerDisplay.style.display = "block";
+}
+
+// ================= GOOGLE FORM =================
+function generateFBZX() {
+  return Math.floor(Math.random() * 1e10).toString();
+}
+
+let fbzx = generateFBZX();
+document.querySelector('input[name="fbzx"]').value = fbzx;
+document.querySelector('input[name="draftResponse"]').value =
+  JSON.stringify([null, null, fbzx]);
+
+// ================= TIMER =================
+function updateTimer() {
+  if (!timerStarted || submitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    submitForm();
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+
+  timerDisplay.textContent =
+    m + ":" + (s < 10 ? "0"+s : s);
+}
+
+setInterval(updateTimer, 1000);
+
+
+let autoSaveTimer = null;
+
+function autoSaveToSheet() {
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+  const pid = getParticipantID();
+  formData.append("participant_id", pid);
+
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (savedStart) {
+    formData.append("start_time", new Date(parseInt(savedStart)));
+  }
+  fetch("https://script.google.com/macros/s/AKfycbzf-BOnKObWuPi1BeE93QO2al3HuAXENNueWzAlg4nGToY5E844GsBVq99pX5MtG2uQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+
+}
+
+// ================= SUBMIT =================
+// ================= SUBMIT =================
+function submitForm() {
+  submitted = true;
+
+  const form = document.getElementById("form");
+  const formData = new FormData(form);
+
+  const pid = getParticipantID();
+
+  formData.append("participant_id", pid);
+  formData.append("status", "SUBMITTED");
+
+  // ambil startTime yang SUDAH ADA (jangan kirim ulang startTime)
+  let savedStart = sessionStorage.getItem("startTime");
+
+  if (savedStart) {
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining);
+  }
+
+  // 🔥 loading screen
+  document.body.innerHTML = `
+    <div style="text-align:center;margin-top:100px">
+      <h2>Mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar</p>
+    </div>
+  `;
+
+  fetch("https://script.google.com/macros/s/AKfycbzf-BOnKObWuPi1BeE93QO2al3HuAXENNueWzAlg4nGToY5E844GsBVq99pX5MtG2uQ/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  }).then(() => {
+
+    sessionStorage.clear();
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:100px">
+        <h2>Terima kasih</h2>
+        <p>Jawaban Anda telah terkirim</p>
+      </div>
+    `;
+  });
+}
+
+
+
+
+document.getElementById("form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  submitForm();
+});
+
+// ================= AUTO SAVE =================
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+
+    saveAnswers();
+
+    // debounce (biar ga spam request)
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+
+  });
+});
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+// event untuk semua textarea
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+
+  // trigger awal (biar tidak gepeng saat reload)
+  autoExpand(el);
+});
+
+// ================= INIT =================
+window.onload = function() {
+  loadAnswers();
+
+  setTimeout(() => {
+    restoreTextareaHeight();
+  }, 50); // delay kecil biar layout settle
+
+  if (sessionStorage.getItem("startTime")) {
+    loadSection();
+  }
+};
+
+// DETEKSI TAB SWITCH
+// ======================
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) {
+    tabSwitchCount++;
+    sendBehavior("TAB_HIDDEN");
+  } else {
+    sendBehavior("TAB_ACTIVE");
+  }
+});
+
+// ======================
+// DETEKSI WINDOW FOCUS
+// ======================
+window.addEventListener("blur", function () {
+  sendBehavior("WINDOW_BLUR");
+});
+
+window.addEventListener("focus", function () {
+  sendBehavior("WINDOW_FOCUS");
+});
+
+// ======================
+// DETEKSI AKTIVITAS USER
+// ======================
+document.addEventListener("mousemove", () => lastActivity = Date.now());
+document.addEventListener("keydown", () => lastActivity = Date.now());
+
+setInterval(() => {
+  let idleTime = (Date.now() - lastActivity) / 1000;
+
+  if (idleTime > 30) {
+    sendBehavior("IDLE_" + Math.floor(idleTime));
+  }
+}, 5000);
+
+</script>
+
+</body>
+</html>
