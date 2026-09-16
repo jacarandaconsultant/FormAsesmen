@@ -729,7 +729,8 @@ let state = {
   timerId: null,
   ended: false,
   isStarted: false,
-  answerSequence: []
+  answerSequence: [],
+  isConfirming: false // <--- TAMBAHAN BARU
 };
 
 // 1. Deklarasikan Fungsi Utama Paling Atas
@@ -923,7 +924,13 @@ function submitResponse(){
   const item=getCurrentItem(); const ans=$("responseText").value.trim();
   if(!ans){ showToast("Tuliskan respons terlebih dahulu."); return; }
   
-  if(!confirm("Kirim jawaban sekarang? Jawaban ini bersifat final dan tidak dapat diedit kembali.")){ return; }
+  // Matikan sensor blur sementara
+  state.isConfirming = true;
+  const isSure = confirm("Kirim jawaban sekarang? Jawaban ini bersifat final dan tidak dapat diedit kembali.");
+  // Nyalakan kembali sensor blur setelah jeda setengah detik
+  setTimeout(() => { state.isConfirming = false; }, 500);
+  
+  if(!isSure){ return; }
   
   item.answer=ans; 
   item.draft=ans; 
@@ -944,7 +951,10 @@ function updateBehaviorLog(type, details, penalty) {
 }
 
 window.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") updateBehaviorLog("Pindah Tab", "Peserta menyembunyikan tab.", 3); });
-window.addEventListener("blur", () => { updateBehaviorLog("Hilang Fokus", "Fokus browser hilang.", 2); });
+window.addEventListener("blur", () => { 
+  if (state.isConfirming) return; // Abaikan jika sedang ada pop-up konfirmasi
+  updateBehaviorLog("Hilang Fokus", "Fokus browser hilang.", 2); 
+});
 
 /* ==========================================================
    EVENT LISTENERS TOMBOL
@@ -1000,7 +1010,11 @@ $("startCaseBtn").onclick = () => {
 };
 
 $("endCaseBtn").onclick=()=>{ 
-  if(confirm("Yakin ingin menyelesaikan kasus ini sekarang? Anda tidak dapat kembali mengubah jawaban di kasus ini.")){
+  state.isConfirming = true;
+  const isSure = confirm("Yakin ingin menyelesaikan kasus ini sekarang? Anda tidak dapat kembali mengubah jawaban di kasus ini.");
+  setTimeout(() => { state.isConfirming = false; }, 500);
+  
+  if(isSure){
     proceedToNextCase();
   }
 };
