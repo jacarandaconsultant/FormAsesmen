@@ -395,7 +395,7 @@ textarea{min-height:220px;resize:vertical}
 /* ==========================================================
    KONFIGURASI
 ========================================================== */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzSvIsnJ1YsQRQsZGwhWtC_ZubkDO_occPbMrdnKmZVegCBPYoyd4i5u-sy4shf3UgK/exec"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZRunmK9xMdXRA1uBAtpnaOYyyBn9pXowJZcIfl9xtBSDMwtLHtSzQBC8ArQWtAUQ6/exec"; 
 
 let CASES = [
   {
@@ -830,7 +830,8 @@ function proceedToNextCase() {
     state.currentCaseIndex++; prepareCaseIntro();
   } else {
     state.ended = true;
-    sendToSheets({ action: "END_TEST", uid: state.uid, remainingSeconds: 0 }); 
+    // Bug fixed: Menggunakan state.remaining, bukan angka 0
+    sendToSheets({ action: "END_TEST", uid: state.uid, remainingSeconds: state.remaining }); 
     saveLocalData(); showScreen("endedScreen");
     localStorage.removeItem("intray_state"); localStorage.removeItem("intray_cases");
   }
