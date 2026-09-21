@@ -730,7 +730,8 @@ let state = {
   ended: false,
   isStarted: false,
   answerSequence: [],
-  isConfirming: false // <--- TAMBAHAN BARU
+  isConfirming: false,
+  typingTimer: null // <--- TAMBAHAN BARU
 };
 
 // 1. Deklarasikan Fungsi Utama Paling Atas
@@ -813,7 +814,12 @@ function prepareCaseIntro() {
 
 function startCaseDesk(isRestored = false) {
   const currentCase = CASES[state.currentCaseIndex];
-  if (!isRestored) state.remaining = currentCase.durationSeconds;
+  
+  if (!isRestored) {
+    state.remaining = currentCase.durationSeconds;
+    // --- BARU: Kirim sinyal ke server bahwa kasus ini (KASUS-1 / KASUS-2) baru saja dimulai ---
+    sendToSheets({ action: "START_CASE", uid: state.uid, caseId: currentCase.id });
+  }
   
   $("dynamicRoleContext").innerHTML = currentCase.contextHTML;
   $("deskWindowTitle").textContent = "Meja Anda";
@@ -826,15 +832,29 @@ function startCaseDesk(isRestored = false) {
 }
 
 function proceedToNextCase() {
-  clearInterval(state.timerId); state.isStarted = false;
+  clearInterval(state.timerId); 
+  
+  // 1. Ambil ID kasus yang baru saja diselesaikan (misal: "KASUS-1" atau "KASUS-2")
+  const currentCaseId = CASES[state.currentCaseIndex].id;
+  const timeLeft = state.remaining;
+  
+  // 2. Kirim sisa waktu KHUSUS untuk kasus ini ke Google Sheets
+  sendToSheets({ action: "END_CASE", uid: state.uid, caseId: currentCaseId, remainingSeconds: timeLeft });
+  
+  state.isStarted = false;
+  
+  // 3. Cek apakah masih ada kasus berikutnya
   if (state.currentCaseIndex < CASES.length - 1) {
-    state.currentCaseIndex++; prepareCaseIntro();
+    state.currentCaseIndex++; 
+    prepareCaseIntro();
   } else {
+    // Jika semua kasus selesai
     state.ended = true;
-    // Bug fixed: Menggunakan state.remaining, bukan angka 0
-    sendToSheets({ action: "END_TEST", uid: state.uid, remainingSeconds: state.remaining }); 
-    saveLocalData(); showScreen("endedScreen");
-    localStorage.removeItem("intray_state"); localStorage.removeItem("intray_cases");
+    sendToSheets({ action: "END_TEST", uid: state.uid }); 
+    saveLocalData(); 
+    showScreen("endedScreen");
+    localStorage.removeItem("intray_state"); 
+    localStorage.removeItem("intray_cases");
   }
 }
 
@@ -924,10 +944,11 @@ function submitResponse(){
   const item=getCurrentItem(); const ans=$("responseText").value.trim();
   if(!ans){ showToast("Tuliskan respons terlebih dahulu."); return; }
   
-  // Matikan sensor blur sementara
+  // Membatalkan pengiriman draf yang sedang "antre" agar tidak menimpa jawaban final
+  clearTimeout(state.typingTimer); 
+  
   state.isConfirming = true;
   const isSure = confirm("Kirim jawaban sekarang? Jawaban ini bersifat final dan tidak dapat diedit kembali.");
-  // Nyalakan kembali sensor blur setelah jeda setengah detik
   setTimeout(() => { state.isConfirming = false; }, 500);
   
   if(!isSure){ return; }
@@ -936,7 +957,7 @@ function submitResponse(){
   item.draft=ans; 
   item.status="responded";
   
-  if (!state.answerSequence.includes(item.id)) state.answerSequence.push(item.id);
+  state.answerSequence.push(item.id + " (Final)");
   
   sendToSheets({ action: "UPDATE_ANSWER", uid: state.uid, itemId: item.id, answer: ans, sequence: state.answerSequence.join(" -> ") });
   
@@ -1026,27 +1047,32 @@ $("submitResponse").onclick=submitResponse;
 
 window.addEventListener("beforeunload",e=>{ if(!state.ended && state.uid){ e.preventDefault(); e.returnValue=""; } });
 
+
 /* ==========================================================
-   AUTO-SYNC DRAFT KE GOOGLE SHEETS
+   AUTO-SYNC DRAFT KE GOOGLE SHEETS & TRACKING URUTAN
 ========================================================== */
-let typingTimer; // Variabel penyimpan waktu jeda
-const DONE_TYPING_INTERVAL = 3000; // Jeda 3 detik (3000 ms)
+const DONE_TYPING_INTERVAL = 3000;
 
 $("responseText").addEventListener("input", function() {
   if(!state.ended && state.currentItem) {
     const item = getCurrentItem();
     if(item && item.status !== "responded") {
-      item.draft = this.value; // 1. Tetap simpan real-time ke browser lokal
+      item.draft = this.value; 
+
+      if (!item.draftSequenceRecorded && this.value.trim().length > 0) {
+        item.draftSequenceRecorded = true; 
+        state.answerSequence.push(item.id + " (Draft)");
+      }
       
-      clearTimeout(typingTimer); // 2. Hapus timer lama jika masih asyik mengetik
+      // Hapus timer lama
+      clearTimeout(state.typingTimer); 
       
-      // 3. Mulai timer baru. Jika 3 detik tidak ada ketikan, kirim ke Google Sheets
-      typingTimer = setTimeout(() => {
+      // Buat timer baru
+      state.typingTimer = setTimeout(() => {
         sendToSheets({ 
           action: "UPDATE_ANSWER", 
           uid: state.uid, 
           itemId: item.id, 
-          // Beri tanda (DRAFT) di Excel agar kamu tahu ini belum disubmit final
           answer: "[DRAFT] " + item.draft, 
           sequence: state.answerSequence.join(" -> ") 
         });
