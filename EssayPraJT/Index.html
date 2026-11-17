@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Essay</title>
+
+<style>
+/* SECURITY & RESET */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f7fa;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+h2, h3 { color: #333; }
+p { line-height: 1.6; color: #444; }
+
+/* FORM ELEMENTS */
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  /* Pengecualian agar kolom input bisa di-klik dan diketik */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+textarea.auto-expand {
+  resize: none;
+  overflow: hidden;
+  min-height: 50px;
+  line-height: 1.5;
+  transition: height 0.1s ease;
+}
+
+/* BUTTONS */
+button {
+  margin-top: 25px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+.btn-primary { background: #007bff; color: white; }
+.btn-primary:hover { background: #0056b3; }
+.btn-success { background: #28a745; color: white; }
+.btn-success:hover { background: #218838; }
+.btn-secondary { background: #6c757d; color: white; }
+.btn-secondary:hover { background: #5a6268; }
+
+/* TIMER */
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: #dc3545;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  display: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* CASE STUDY TEXT & TABLE */
+.case-box {
+  background: #fdfdfd;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  white-space: pre-line;
+}
+
+/* MODAL CONFIRMATION */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+}
+.modal-buttons { margin-top: 20px; display: flex; justify-content: space-around; }
+
+</style>
+</head>
+
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+
+<div id="timer">30:00</div>
+
+<div class="container">
+  <form id="assessmentForm">
+
+    <!-- PAGE 1: WELCOME -->
+    <div id="page1" class="page active" style="text-align: center; margin-top: 50px;">
+      <h2>Selamat datang di tes Essay.</h2>
+      <p>Silahkan klik Masuk untuk mengisi data diri</p>
+      <button type="button" class="btn-primary" onclick="goToPage('page2')">Masuk</button>
+    </div>
+
+    <!-- PAGE 2: DATA DIRI -->
+    <div id="page2" class="page">
+      <h2>Data Diri</h2>
+      <label>Nama</label>
+      <input type="text" name="nama" required>
+
+      <label>Level Jabatan</label>
+      <select name="level_jabatan" required>
+        <option value="">-- Pilih Level Jabatan --</option>
+        <option value="Pratama 1">Pratama 1</option>
+        <option value="Pratama 2">Pratama 2</option>
+        <option value="Pratama 3">Pratama 3</option>
+      </select>
+
+      <label>Unit - Jabatan saat ini (Contoh : Divisi Pengendalian Operasi - Analyst)</label>
+      <input type="text" name="unit" required>
+
+      <button type="button" class="btn-primary" onclick="validateAndGo('page2', 'page3')">Selanjutnya</button>
+    </div>
+
+    <!-- PAGE 3: INSTRUKSI -->
+    <div id="page3" class="page">
+      <h2>Instruksi</h2>
+      <div class="case-box">
+        Instruksi: jawablah pertanyaan-pertanyaan di bawah ini berdasarkan situasi kerja Anda dalam waktu 6 bulan terakhir! Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 30 menit.
+      </div>
+      <button type="button" class="btn-success" onclick="startTest()">Mulai</button>
+    </div>
+
+    <!-- PAGE 4: TES (SOAL UTUH) -->
+    <div id="page4" class="page">
+      <h2>Soal Essay</h2>
+      
+      <div class="case-box">
+        Jawablah pertanyaan-pertanyaan di bawah ini berdasarkan situasi kerja Anda dalam waktu 6 bulan terakhir!
+      </div>
+
+      <label>1. Ceritakan situasi ketika Anda berhasil mencapai target pekerjaan melebihi dari target yang ditetapkan. Bagaimana Anda mengambil insiatif untuk melampaui target tersebut, tantangan apa yang Anda hadapi, dan apa yang yang Anda lakukan untuk bisa mencapai hasil yang lebih baik?</label?
+      <textarea name="j1" class="auto-expand" required></textarea>
+
+      <label>2. Pernahkah Anda menghadapi tantangan dalam pekerjaan Anda yang dapat diatasi dengan teknologi digital? Ceritakan bagaimana Anda memilih teknologi yang tepat, mempelajarinya, menggunakannya, dan membantu menyelesaikan masalah pekerjaan Anda dengan lebih efektif.</label>
+      <textarea name="j2" class="auto-expand" required></textarea>
+
+      <label>3. Pernahkah Anda berada dalam situasi di mana Anda harus menetapkan batasan atau aturan kepada rekan kerja untuk memastikan tugas diselesaikan sesuai target? Ceritakan bagaimana Anda menetapkan batasan tersebut, cara Anda menyampaikannya, dan bagaimana hasilnya memengaruhi produktivitas tim.</label>
+      <textarea name="j3" class="auto-expand" required></textarea>
+
+      <label>4. Ceritakan contoh kegiatan yang Anda lakukan yang bertujuan untuk meningkatkan efisisensi dan efektivitas di area kerja Anda. Jelaskan bagaimana kegiatan tersebut bisa berkontribusi terhadapi visi isi dan sasaran strategis perusahaan!</label>
+      <textarea name="j4" class="auto-expand" required></textarea>
+
+      <button type="button" class="btn-success" onclick="showConfirmModal()">Kirim Jawaban</button>
+    </div>
+
+    <!-- PAGE 5: SELESAI -->
+    <div id="page5" class="page" style="text-align: center; margin-top: 100px;">
+      <h2>Jawaban anda sudah terkirim</h2>
+      <p>Silahkan tunggu instruksi lebih lanjut untuk tes berikutnya.</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- MODAL KONFIRMASI -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <h3>Konfirmasi</h3>
+    <p>Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeConfirmModal()">Tidak</button>
+      <button class="btn-success" onclick="finalSubmit(false)">Ya, Kirim</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= KONFIGURASI URL APP SCRIPT =================
+// GANTI URL DI BAWAH INI DENGAN URL DEPLOYMENT APP SCRIPT ANDA
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyNtrk00STowqnF6ZzW5Md6LzyM0BrVxUk8Z1X9XdNxmsKS9P53tg34vr-WpMA22VjZ/exec";
+
+// ================= VARIABLES =================
+let duration = 30 * 60; // 30 Menit
+let timerStarted = false;
+let testSubmitted = false;
+let autoSaveTimer = null;
+let lastActivity = Date.now();
+
+// ================= NAVIGATION =================
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+}
+
+function validateAndGo(current, next) {
+  const section = document.getElementById(current);
+  const inputs = section.querySelectorAll("input, select");
+  let valid = true;
+  
+  inputs.forEach(input => {
+    if (input.required && !input.value.trim()) {
+      input.style.borderColor = "red";
+      valid = false;
+    } else {
+      input.style.borderColor = "#ccc";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua data diri dengan lengkap.");
+    return;
+  }
+  goToPage(next);
+}
+
+// ================= PARTICIPANT ID =================
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="nama"]').value || "anon";
+  let base = nama.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  let id = base + "_" + Date.now();
+  sessionStorage.setItem("participant_id", id);
+  return id;
+}
+
+// ================= START TEST & TIMER =================
+function startTest() {
+  goToPage('page4');
+  document.getElementById("timer").style.display = "block";
+  
+  if (!sessionStorage.getItem("startTime")) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+  timerStarted = true;
+  autoSaveToSheet();
+}
+
+function updateTimer() {
+  if (!timerStarted || testSubmitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    finalSubmit(true);
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+  document.getElementById("timer").textContent = (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+}
+setInterval(updateTimer, 1000);
+
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+});
+
+// ================= DATA LOGIC (AUTOSAVE & SUBMIT) =================
+function gatherFormData(status, isTimeout) {
+  const form = document.getElementById("assessmentForm");
+  const formData = new FormData(form);
+  
+  formData.append("participant_id", getParticipantID());
+  formData.append("status", status);
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (savedStart) {
+    let startDate = new Date(parseInt(savedStart));
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+    
+    formData.append("start_time", startDate.toString());
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining < 0 ? 0 : remaining);
+  }
+
+  if (status === "SUBMITTED") {
+    formData.append("submit_time", new Date().toString());
+    formData.append("is_timeout", isTimeout ? "YES" : "NO");
+  }
+
+  return formData;
+}
+
+function autoSaveToSheet() {
+  if (testSubmitted) return;
+  const formData = gatherFormData("ON_PROGRESS", false);
+  
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .catch(err => console.error("Autosave error", err));
+}
+
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+  });
+});
+
+// ================= MODAL & FINAL SUBMIT =================
+function showConfirmModal() {
+  document.getElementById("confirmModal").style.display = "flex";
+}
+function closeConfirmModal() {
+  document.getElementById("confirmModal").style.display = "none";
+}
+
+let isSubmitting = false; 
+
+function finalSubmit(isTimeout) {
+  if (isSubmitting) return; 
+  isSubmitting = true;
+  testSubmitted = true;
+  
+  clearTimeout(autoSaveTimer); 
+  
+  document.getElementById("confirmModal").style.display = "none";
+  document.getElementById("timer").style.display = "none";
+  
+  // 🔥 PERBAIKAN: AMBIL DATA DULU SEBELUM TAMPILAN SOAL DIHILANGKAN
+  const formData = gatherFormData("SUBMITTED", isTimeout);
+
+  // BARU UBAH TAMPILAN JADI LOADING
+  document.getElementById("page4").innerHTML = `
+    <div style="text-align:center; padding: 50px;">
+      <h2>Sedang mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar.</p>
+    </div>
+  `;
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .then(() => {
+      sessionStorage.clear();
+      goToPage('page5');
+    }).catch(() => {
+      alert("Terjadi kesalahan saat mengirim. Silakan coba lagi.");
+      testSubmitted = false;
+      isSubmitting = false; 
+      document.getElementById("timer").style.display = "block";
+    });
+}
+
+// ================= SECURITY & BEHAVIOR TRACKING =================
+function sendBehavior(type) {
+  if (!timerStarted || testSubmitted) return;
+  const formData = new FormData();
+  formData.append("participant_id", getParticipantID());
+  formData.append("behavior", type);
+  formData.append("timestamp_client", new Date().toString());
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData });
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) sendBehavior("TAB_HIDDEN");
+  else sendBehavior("TAB_ACTIVE");
+});
+window.addEventListener("blur", () => sendBehavior("WINDOW_BLUR"));
+window.addEventListener("focus", () => sendBehavior("WINDOW_FOCUS"));
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12') { e.preventDefault(); sendBehavior("ATTEMPT_F12"); }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_DEVTOOLS_SHORTCUT"); }
+  if (e.ctrlKey && ['U','u'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_VIEW_SOURCE"); }
+  if (e.ctrlKey && ['A','a'].includes(e.key)) { e.preventDefault(); }
+  if (e.ctrlKey && ['C','V','X','c','v','x'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_COPY_PASTE"); }
+  if (e.key === 'PrintScreen') { sendBehavior("ATTEMPT_PRINTSCREEN"); navigator.clipboard.writeText("Tindakan screenshot dilarang."); }
+});
+
+window.addEventListener('resize', function() {
+  const threshold = 160;
+  if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+    sendBehavior("DEVTOOLS_OPENED");
+  }
+});
+</script>
+</body>
+</html>
