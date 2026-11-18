@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes In-Tray Assessment</title>
+
+<style>
+/* SECURITY & RESET */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: #f0f2f5;
+  color: #1f2937;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 35px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+h2 { color: #111827; margin-top: 0; }
+h3 { color: #1f2937; }
+p { line-height: 1.6; color: #374151; }
+
+/* FORM ELEMENTS */
+label {
+  display: block;
+  margin-top: 18px;
+  font-weight: bold;
+  color: #111827;
+}
+
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+textarea.auto-expand {
+  resize: none;
+  overflow: hidden;
+  min-height: 90px;
+  line-height: 1.6;
+  transition: height 0.1s ease;
+}
+
+/* BUTTONS */
+button {
+  margin-top: 25px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.btn-primary { background: #2563eb; color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-success { background: #16a34a; color: white; }
+.btn-success:hover { background: #15803d; }
+.btn-secondary { background: #64748b; color: white; }
+.btn-secondary:hover { background: #475569; }
+
+/* TIMER */
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: #dc2626;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  display: none;
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+  z-index: 1000;
+}
+
+/* SCENARIO & INSTRUCTION BOX */
+.scenario-box {
+  background: #f8fafc;
+  padding: 25px;
+  border: 1px solid #cbd5e1;
+  border-left: 5px solid #1e3a8a;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  line-height: 1.65;
+}
+
+.scenario-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.scenario-subtitle {
+  font-weight: bold;
+  color: #0f172a;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.scenario-box p {
+  margin: 8px 0;
+}
+
+.scenario-box ul {
+  margin: 6px 0 12px 0;
+  padding-left: 22px;
+}
+
+.scenario-box li {
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+/* ================= EMAIL LAYOUT ================= */
+.email-card {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  margin-bottom: 28px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.email-top-bar {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.email-type-badge {
+  background: #3b82f6;
+  color: #ffffff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.wa-type-badge {
+  background: #22c55e;
+  color: #ffffff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.email-header {
+  background: #f8fafc;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.email-subject {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.email-meta {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.email-meta span.meta-label {
+  font-weight: 600;
+  color: #1e293b;
+  display: inline-block;
+  min-width: 65px;
+}
+
+.email-body {
+  padding: 20px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #1f2937;
+}
+
+.email-body p {
+  margin: 0 0 12px 0;
+  color: #1f2937;
+}
+
+.email-body ul {
+  margin: 8px 0 14px 0;
+  padding-left: 22px;
+}
+
+.email-body li {
+  margin-bottom: 5px;
+}
+
+.email-signature {
+  margin-top: 16px;
+  color: #334155;
+}
+
+/* EMAIL TABLE */
+.email-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.email-table th, .email-table td {
+  border: 1px solid #cbd5e1;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.email-table th {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-weight: bold;
+}
+
+.email-table td:first-child, .email-table th:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+
+/* ================= WHATSAPP LAYOUT ================= */
+.wa-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.wa-top-bar {
+  background: #075e54;
+  color: #ffffff;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wa-contact-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wa-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #128c7e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.wa-contact-name {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.wa-contact-status {
+  font-size: 12px;
+  color: #d1fae5;
+}
+
+.wa-badge {
+  background: #25d366;
+  color: #064e3b;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.wa-chat-area {
+  background-color: #efeae2;
+  background-image: radial-gradient(#d4cdc3 1px, transparent 1px);
+  background-size: 18px 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wa-bubble {
+  max-width: 78%;
+  padding: 10px 14px 8px 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+
+.wa-bubble p {
+  margin: 0 0 6px 0;
+  color: #111827;
+}
+
+.wa-bubble p:last-of-type {
+  margin-bottom: 2px;
+}
+
+.wa-in {
+  align-self: flex-start;
+  background: #ffffff;
+  border-radius: 0 10px 10px 10px;
+}
+
+.wa-out {
+  align-self: flex-end;
+  background: #dcf8c6;
+  border-radius: 10px 0 10px 10px;
+}
+
+.wa-sender {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.wa-in .wa-sender {
+  color: #0d9488;
+}
+
+.wa-out .wa-sender {
+  color: #15803d;
+}
+
+.wa-time {
+  font-size: 11px;
+  color: #64748b;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.wa-ticks {
+  color: #0284c7;
+  font-weight: bold;
+}
+
+/* ================= ANSWER SECTION ================= */
+.answer-section {
+  margin-top: 40px;
+  padding-top: 25px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.answer-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.answer-card label {
+  margin-top: 0;
+  font-size: 15px;
+  color: #1e3a8a;
+}
+
+/* MODAL CONFIRMATION */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.modal-buttons { margin-top: 20px; display: flex; justify-content: space-around; }
+
+</style>
+</head>
+
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+
+<div id="timer">60:00</div>
+
+<div class="container">
+  <form id="assessmentForm">
+
+    <!-- PAGE 1: WELCOME -->
+    <div id="page1" class="page active" style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
+      <h2>Selamat datang di tes In-Tray.</h2>
+      <p>Silahkan klik Masuk untuk mengisi data diri</p>
+      <button type="button" class="btn-primary" onclick="goToPage('page2')">Masuk</button>
+    </div>
+
+    <!-- PAGE 2: DATA DIRI -->
+    <div id="page2" class="page">
+      <h2>Data Diri</h2>
+      <label>Nama</label>
+      <input type="text" name="nama" required>
+
+      <label>Level Jabatan</label>
+      <select name="level_jabatan" required>
+        <option value="">-- Pilih Level Jabatan --</option>
+        <option value="Pratama 1">Pratama 1</option>
+        <option value="Pratama 2">Pratama 2</option>
+        <option value="Pratama 3">Pratama 3</option>
+      </select>
+
+      <label>Unit - Jabatan saat ini (Contoh : Divisi Pengendalian Operasi - Analyst)</label>
+      <input type="text" name="unit" required>
+
+      <button type="button" class="btn-primary" onclick="validateAndGo('page2', 'page3')">Selanjutnya</button>
+    </div>
+
+    <!-- PAGE 3: INSTRUKSI -->
+    <div id="page3" class="page">
+      <h2>Instruksi</h2>
+      <div class="scenario-box" style="white-space: pre-line;">Anda akan mendapatkan 6 (enam) dokumen yang terdiri atas 1 dokumen skenario &amp; instruksi dan 5 dokumen kasus. Bacalah dengan seksama masing-masing dokumen tersebut dan tuliskan jawaban Anda pada kolom jawaban yang disediakan di Form ini. Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 60 menit untuk seluruh tugas. 
+
+Catatan: Kasus dapat dikerjakan secara tidak berurutan. Silakan mulai mengerjakan sesuai prioritas Anda atas kasus-kasus yang ada.</div>
+      <button type="button" class="btn-success" onclick="startTest()">Mulai</button>
+    </div>
+
+    <!-- PAGE 4: TES IN-TRAY (SKENARIO + 5 DOKUMEN + 5 KOLOM JAWABAN) -->
+    <div id="page4" class="page">
+      <h2>Dokumen Skenario &amp; Kasus In-Tray</h2>
+
+      <!-- DOKUMEN SKENARIO & INSTRUKSI -->
+      <div class="scenario-box">
+        <div class="scenario-title">SKENARIO - PRA</div>
+        <p>PT Bangun Jiwa merupakan perusahaan konstruksi nasional yang bergerak dalam pembangunan gedung komersial, fasilitas kesehatan, kawasan hunian, dan infrastruktur. Perusahaan saat ini sedang menangani beberapa proyek konstruksi di berbagai wilayah Indonesia.</p>
+        <p>Kelancaran proyek sangat bergantung pada ketersediaan material, ketepatan jadwal pengiriman, kualitas barang, serta koordinasi antara tim proyek, pemasok, dan departemen internal.</p>
+        <p>Anda adalah Bpk. Wisnu Sanjaya, staf logistic di PT Bangun Jiwa. Sebagai Staf Logistik, Anda bertanggung jawab memastikan kebutuhan material konstruksi tersedia dan didistribusikan ke lokasi proyek secara tepat waktu, sesuai spesifikasi, dan dengan biaya yang efisien.</p>
+        
+        <div class="scenario-subtitle">Tanggung jawab utama meliputi:</div>
+        <ul>
+          <li>Mengkoordinasikan pengadaan dan pengiriman material dengan pemasok.</li>
+          <li>Memastikan material yang diterima sesuai dengan jumlah, kualitas, dan spesifikasi pesanan.</li>
+          <li>Menangani permintaan dan keluhan dari pelanggan internal maupun eksternal.</li>
+          <li>Memantau ketersediaan stok dan mengantisipasi potensi kekurangan material.</li>
+          <li>Berkoordinasi dengan departemen Procurement, Finance, Warehouse, Quality Control, dan Project Management.</li>
+          <li>Mengidentifikasi risiko logistik yang dapat mengganggu kelancaran proyek.</li>
+          <li>Mencari peluang meningkatkan efisiensi distribusi dan mengoptimalkan biaya operasional.</li>
+        </ul>
+
+        <div class="scenario-subtitle">Situasi yang saat ini Anda hadapi</div>
+        <p>Hari ini adalah Senin, pukul 08.00 WIB.</p>
+        <p>Anda baru saja tiba di kantor PT Bangun Jiwa dan mulai memeriksa email serta pesan WhatsApp yang masuk.</p>
+        <p>Manajer Logistik sedang menghadiri rapat koordinasi proyek di luar kantor dan diperkirakan baru dapat dihubungi kembali sekitar pukul 11.00 WIB.</p>
+        <p>Saat membuka inbox, Anda menemukan lima dokumen masuk dari berbagai pihak. Beberapa permasalahan membutuhkan penanganan segera karena berpotensi mengganggu kelancaran proyek, menimbulkan ketidakpuasan pelanggan, atau menyebabkan kerugian perusahaan.</p>
+        <p>Anda memiliki kewenangan untuk melakukan koordinasi, memberikan konfirmasi, mencari alternatif penyelesaian, dan mengambil keputusan operasional rutin. Namun, keputusan yang melibatkan perubahan anggaran besar, persetujuan pembayaran khusus, atau perubahan kontrak harus mendapatkan persetujuan atasan.</p>
+
+        <div class="scenario-subtitle">Instruksi untuk Anda:</div>
+        <p>Bacalah seluruh dokumen berikut dan tentukan tindakan yang perlu Anda ambil. Anda tidak hanya diminta menjelaskan apa yang akan dilakukan, tetapi juga menyusun respons konkret kepada pihak yang menghubungi Anda sesuai kapasitas Anda.</p>
+        <p>Anda harus mempertimbangkan urgensi, kepentingan pelanggan, risiko operasional, biaya, dan dampak keputusan terhadap Perusahaan.</p>
+      </div>
+
+      <!-- INTRAY #1 : EMAIL KLIEN -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #1 : Email Klien</span>
+          <span class="email-type-badge">EMAIL MASUK</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: URGENT – Keterlambatan Pengiriman Material Baja</div>
+          <div class="email-meta">
+            <div><span class="meta-label">Kepada:</span> Divisi Logistik</div>
+          </div>
+        </div>
+        <div class="email-body">
+          <p>Yth. Tim Logistik PT Bangun Jiwa,</p>
+          <p>Saya ingin menyampaikan keluhan terkait keterlambatan pengiriman material baja yang seharusnya tiba di lokasi proyek Hotel Arunika hari ini pukul 07.00 WIB.</p>
+          <p>Sampai sekarang material tersebut belum diterima. Padahal, tim konstruksi sudah mempersiapkan tenaga kerja dan peralatan untuk memulai pekerjaan pemasangan struktur baja pagi ini.</p>
+          <p>Keterlambatan ini berpotensi menyebabkan sekitar 25 pekerja tidak dapat melanjutkan pekerjaan sesuai jadwal. Jika material belum tiba hingga pukul 12.00 WIB, kami kemungkinan harus menghentikan pekerjaan sementara.</p>
+          <p>Kami juga ingin mengingatkan bahwa keterlambatan serupa sudah terjadi dua kali dalam satu bulan terakhir. Hal ini mulai memengaruhi kepercayaan tim proyek terhadap layanan logistik perusahaan Anda.</p>
+          <p>Mohon segera berikan:</p>
+          <ul>
+            <li>Penjelasan penyebab keterlambatan.</li>
+            <li>Kepastian waktu kedatangan material.</li>
+            <li>Solusi agar pekerjaan proyek tidak mengalami keterlambatan lebih lanjut.</li>
+          </ul>
+          <p>Kami mengharapkan respons Anda dalam waktu 30 menit.</p>
+          <div class="email-signature">
+            Terima kasih.<br><br>
+            <strong>Budi Santoso</strong><br>
+            Project Manager – Hotel Arunika
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #2 : INTERNAL MAIL -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #2 : Internal Mail</span>
+          <span class="email-type-badge">EMAIL INTERNAL</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: Penahanan Pembayaran kepada Supplier</div>
+        </div>
+        <div class="email-body">
+          <p>Kami ingin menginformasikan bahwa pembayaran kepada supplier PT Baja Prima sebesar Rp450.000.000 saat ini masih ditahan oleh Finance karena terdapat dua invoice yang belum dilengkapi dokumen pendukung penerimaan barang (Goods Receipt Note/GRN) oleh pihak Warehouse kita di Pulogadung.</p>
+          <p>Pemasok tersebut telah menghubungi Finance dan menyampaikan bahwa mereka tidak akan memproses pengiriman material berikutnya apabila pembayaran tidak segera diselesaikan.</p>
+          <p>Berdasarkan catatan kami, terdapat pengiriman material yang masih dibutuhkan untuk dua proyek aktif Perusahaan, yaitu proyek Rumah Sakit Daerah Bantul dan Hotel Arunika.</p>
+          <p>Karenanya, mohon bantuan Anda untuk:</p>
+          <ul>
+            <li>Memeriksa status penerimaan barang dan kelengkapan dokumen.</li>
+            <li>Mengkoordinasikan penyelesaian dokumen dengan Warehouse.</li>
+            <li>Memberikan informasi mengenai kemungkinan penyelesaian masalah ini hari ini.</li>
+          </ul>
+          <p>Kami perlu menghindari terganggunya hubungan dengan pemasok, tetapi pembayaran hanya dapat diproses setelah dokumen pendukung diverifikasi sesuai prosedur.</p>
+          <div class="email-signature">
+            Salam,<br>
+            <strong>Rina</strong><br>
+            Finance Department
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #3 : INTERNAL MAIL -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #3 : Internal Mail</span>
+          <span class="email-type-badge">EMAIL INTERNAL</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: HOLD – Material Keramik Tidak Sesuai Spesifikasi</div>
+        </div>
+        <div class="email-body">
+          <p>Selamat pagi, Pak Wisnu.</p>
+          <p>Kami baru saja menyelesaikan pemeriksaan terhadap material keramik yang dikirim untuk proyek pembangunan Apartemen Green Residence.</p>
+          <p>Berdasarkan pemeriksaan awal, sekitar 15% dari total material yang diterima memiliki warna dan ukuran yang tidak sesuai dengan spesifikasi kontrak.</p>
+          <p>Tim QC merekomendasikan agar material yang tidak sesuai tersebut tidak digunakan sebelum dilakukan pemeriksaan lebih lanjut.</p>
+          <p>Namun, Project Manager menginformasikan bahwa pekerjaan pemasangan keramik dijadwalkan dimulai besok pagi. Jika material pengganti tidak segera tersedia, pekerjaan dapat mengalami keterlambatan.</p>
+          <p>Mohon bagaimana saran Pak Wisnu terkait hal ini. Terima kasih.</p>
+          <div class="email-signature">
+            Salam,<br>
+            <strong>Dedi</strong><br>
+            Quality Control Department
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #4 : PERCAKAPAN WA -->
+      <div class="wa-card">
+        <div class="email-top-bar">
+          <span>INTRAY #4 : Percakapan WA</span>
+          <span class="wa-type-badge">PESAN WHATSAPP</span>
+        </div>
+        <div class="wa-top-bar">
+          <div class="wa-contact-info">
+            <div class="wa-avatar">H</div>
+            <div>
+              <div class="wa-contact-name">Hariyadi -Warehouse Pulogadung</div>
+              <div class="wa-contact-status">online</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wa-chat-area">
+          <!-- Pesan 1 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <div class="wa-sender">Hariyadi -Warehouse Pulogadung</div>
+            <p>Selamat pagi, Pak Wisnu. Maaf mengganggu.</p>
+            <p>Saya mau menyampaikan masalah terkait kondisi Warehouse Pulogadung. Saat ini kapasitas gudang kami sudah hampir penuh, bahkan beberapa material terpaksa ditempatkan di area loading dan jalur akses forklift.</p>
+            <div class="wa-time">08.18</div>
+          </div>
+
+          <!-- Pesan 2 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <p>Dalam dua minggu terakhir, ada beberapa pengiriman material konstruksi yang datang bersamaan, sementara material dari proyek sebelumnya masih menumpuk dan belum diambil atau didistribusikan ke lokasi proyek.</p>
+            <p>Kondisi ini mulai mengganggu aktivitas bongkar muat dan meningkatkan risiko kerusakan material.</p>
+            <div class="wa-time">08.19</div>
+          </div>
+
+          <!-- Pesan 3 (Keluar) -->
+          <div class="wa-bubble wa-out">
+            <div class="wa-sender">Wisnu Sanjaya (Anda)</div>
+            <p>Selamat pagi, Pak Andi. Terima kasih atas informasinya.</p>
+            <p>Apakah saat ini material yang belum didistribusikan tersebut sebagian besar merupakan kebutuhan proyek Hotel Arunika dan Rumah Sakit Daerah Bantul? Apakah ada kendala tertentu sehingga material tersebut belum dapat dikirim ke lokasi proyek?</p>
+            <div class="wa-time">08.21 <span class="wa-ticks">✓✓</span></div>
+          </div>
+
+          <!-- Pesan 4 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <div class="wa-sender">Hariyadi -Warehouse Pulogadung</div>
+            <p>Betul, Pak. Sebagian besar memang untuk kedua proyek tersebut.</p>
+            <p>Masalahnya, jadwal pengiriman dari supplier tidak selalu sesuai dengan jadwal kebutuhan proyek. Kadang material datang sekaligus dalam jumlah besar, tetapi pihak proyek belum siap menerima karena area penyimpanan di lokasi mereka juga terbatas.</p>
+            <p>Akhirnya barang tertahan di gudang kami.</p>
+            <div class="wa-time">08.23</div>
+          </div>
+
+          <!-- Pesan 5 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <p>Selain itu, kami juga masih menunggu instruksi mengenai beberapa material yang sudah lama tersimpan. Ada material yang sudah lebih dari satu bulan berada di sini, tetapi belum ada kepastian apakah akan dikirim, dikembalikan ke supplier, atau tetap disimpan.</p>
+            <p>Kami sudah beberapa kali menyampaikan hal ini, tetapi belum ada keputusan yang jelas.</p>
+            <div class="wa-time">08.25</div>
+          </div>
+
+          <!-- Pesan 6 (Keluar) -->
+          <div class="wa-bubble wa-out">
+            <div class="wa-sender">Wisnu Sanjaya (Anda)</div>
+            <p>Saya mengerti, Pak. Apakah Bapak bisa memberikan daftar material yang saat ini menumpuk, termasuk jumlah, proyek tujuan, dan berapa lama material tersebut sudah berada di gudang?</p>
+            <p>Saya ingin melihat kemungkinan untuk mengatur ulang jadwal distribusi dan berkoordinasi dengan masing-masing Project Manager.</p>
+            <div class="wa-time">08.27 <span class="wa-ticks">✓✓</span></div>
+          </div>
+
+          <!-- Pesan 7 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <div class="wa-sender">Hariyadi -Warehouse Pulogadung</div>
+            <p>Bisa, Pak. Tapi saya juga perlu menyampaikan bahwa kondisi ini sudah cukup mengganggu operasional kami.</p>
+            <p>Kami kekurangan ruang penyimpanan, sementara pengiriman material baru masih terus datang. Bahkan kemarin ada satu truk yang harus menunggu hampir empat jam karena area bongkar muat sedang digunakan untuk menata material yang menumpuk.</p>
+            <p>Kalau terus seperti ini, kami khawatir tidak bisa menerima pengiriman berikutnya dengan baik.</p>
+          </div>
+
+          <!-- Pesan 8 (Keluar / Placeholder) -->
+          <div class="wa-bubble wa-out">
+            <div class="wa-sender">Wisnu Sanjaya (Anda)</div>
+            <p>……………….</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #5 : EMAIL SUPPLIER -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #5 : Email Supplier</span>
+          <span class="email-type-badge">EMAIL MASUK</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: Penawaran Material Konstruksi Generasi Terbaru – Premium Structural Steel</div>
+          <div class="email-meta">
+            <div><span class="meta-label">Dari:</span> Marketing &amp; Sales – PT Mitra Material Indonesia</div>
+            <div><span class="meta-label">Kepada:</span> Wisnu – Staf Logistik, PT Bangun Jiwa</div>
+          </div>
+        </div>
+        <div class="email-body">
+          <p>Yth. Bapak Wisnu,</p>
+          <p>Kami ingin memperkenalkan produk terbaru kami, yaitu Premium Structural Steel, yang merupakan material baja konstruksi dengan teknologi pelapisan khusus untuk meningkatkan ketahanan terhadap korosi dan memperpanjang usia penggunaan struktur bangunan.</p>
+          <p>Produk ini baru saja diluncurkan dan saat ini mulai digunakan oleh beberapa perusahaan konstruksi besar untuk proyek gedung komersial dan fasilitas industri.</p>
+          <p>Kami melihat bahwa PT Bangun Jiwa memiliki beberapa proyek konstruksi yang berpotensi menggunakan material tersebut, terutama proyek pembangunan Hotel Arunika dan Rumah Sakit Daerah Bantul.</p>
+          <p>Berikut penawaran harga kami:</p>
+
+          <table class="email-table">
+            <thead>
+              <tr>
+                <th>Keterangan</th>
+                <th>Material saat ini</th>
+                <th>Produk baru</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Jenis material</td>
+                <td>Standard Structural Steel</td>
+                <td>Premium Structural Steel</td>
+              </tr>
+              <tr>
+                <td>Harga per ton</td>
+                <td>Rp12.000.000</td>
+                <td>Rp15.600.000</td>
+              </tr>
+              <tr>
+                <td>Ketahanan korosi</td>
+                <td>Standar</td>
+                <td>Lebih tinggi</td>
+              </tr>
+              <tr>
+                <td>Estimasi usia penggunaan</td>
+                <td>15 tahun</td>
+                <td>25 tahun</td>
+              </tr>
+              <tr>
+                <td>Garansi produk</td>
+                <td>5 tahun</td>
+                <td>10 tahun</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>Produk baru ini memiliki harga sekitar 30% lebih tinggi dibandingkan material standar yang biasa digunakan oleh perusahaan Anda.</p>
+          <p>Namun, berdasarkan spesifikasi teknis dari produsen, material ini memiliki ketahanan korosi lebih baik dan dapat mengurangi kebutuhan pemeliharaan dalam jangka panjang.</p>
+          <p>Sebagai penawaran khusus untuk PT Bangun Jiwa, kami bersedia memberikan diskon sebesar 5% apabila perusahaan melakukan pemesanan minimal 100 ton dalam bulan ini.</p>
+          <p>Kami juga ingin menyampaikan bahwa stok produk ini masih terbatas. Jika PT Bangun Jiwa tertarik, kami berharap dapat memperoleh konfirmasi awal paling lambat Jumat minggu ini agar kami dapat mengalokasikan stok untuk kebutuhan proyek Anda.</p>
+          <p>Kami berharap produk ini dapat menjadi alternatif material yang memberikan nilai tambah bagi proyek-proyek PT Bangun Jiwa.</p>
+          <p>Apabila Bapak tertarik, kami siap melakukan presentasi produk dan memberikan spesifikasi teknis lebih lanjut.</p>
+          <p>Terima kasih atas perhatian dan kerja samanya.</p>
+          <div class="email-signature">
+            Hormat kami,<br>
+            <strong>Rudi Hartono</strong><br>
+            Sales Manager<br>
+            PT Mitra Material Indonesia
+          </div>
+        </div>
+      </div>
+
+      <!-- BAGIAN KOLOM JAWABAN (5 DOKUMEN) -->
+      <div class="answer-section">
+        <h2>Lembar Jawaban In-Tray</h2>
+        <p style="font-size: 14px; color: #475569; margin-bottom: 20px;">
+          Tuliskan tindakan dan respons konkret Anda pada masing-masing kolom di bawah ini sesuai prioritas Anda.
+        </p>
+
+        <div class="answer-card">
+          <label>1. INTRAY #1 (Email Klien) – Keterlambatan Pengiriman Material Baja (Hotel Arunika)</label>
+          <textarea name="j1" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>2. INTRAY #2 (Internal Mail) – Penahanan Pembayaran kepada Supplier (PT Baja Prima)</label>
+          <textarea name="j2" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>3. INTRAY #3 (Internal Mail) – Material Keramik Tidak Sesuai Spesifikasi (Apartemen Green Residence)</label>
+          <textarea name="j3" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>4. INTRAY #4 (Percakapan WA) – Kondisi Kapasitas Warehouse Pulogadung</label>
+          <textarea name="j4" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>5. INTRAY #5 (Email Supplier) – Penawaran Material Premium Structural Steel</label>
+          <textarea name="j5" class="auto-expand" required></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="btn-success" onclick="showConfirmModal()">Kirim Jawaban</button>
+    </div>
+
+    <!-- PAGE 5: SELESAI -->
+    <div id="page5" class="page" style="text-align: center; margin-top: 100px; margin-bottom: 100px;">
+      <h2>Jawaban anda sudah terkirim</h2>
+      <p>Silahkan tunggu instruksi lebih lanjut untuk tes berikutnya.</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- MODAL KONFIRMASI -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <h3>Konfirmasi</h3>
+    <p>Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeConfirmModal()">Tidak</button>
+      <button class="btn-success" onclick="finalSubmit(false)">Ya, Kirim</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= KONFIGURASI URL APP SCRIPT =================
+// GANTI URL DI BAWAH INI DENGAN URL DEPLOYMENT APP SCRIPT ANDA
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzVqbS2dZaqUqxX_OrwUcuAL-igJEdVww0vTurvxThG-aEo42y3as8rqclPYBdMFCPuxw/exec";
+
+// ================= VARIABLES =================
+let duration = 60 * 60; // 60 Menit
+let timerStarted = false;
+let testSubmitted = false;
+let autoSaveTimer = null;
+let answerOrder = []; // Mencatat urutan pengerjaan (misal: j1 - j3 - j2 - j5 - j4)
+
+// ================= NAVIGATION =================
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  sessionStorage.setItem("currentPage", pageId); // <-- TAMBAHKAN BARIS INI
+}
+
+function validateAndGo(current, next) {
+  const section = document.getElementById(current);
+  const inputs = section.querySelectorAll("input, select");
+  let valid = true;
+  
+  inputs.forEach(input => {
+    if (input.required && !input.value.trim()) {
+      input.style.borderColor = "red";
+      valid = false;
+    } else {
+      input.style.borderColor = "#cbd5e1";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua data diri dengan lengkap.");
+    return;
+  }
+  goToPage(next);
+}
+
+// ================= PARTICIPANT ID =================
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="nama"]').value || "anon";
+  let base = nama.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  let id = base + "_" + Date.now();
+  sessionStorage.setItem("participant_id", id);
+  return id;
+}
+
+// ================= START TEST & TIMER =================
+function startTest() {
+  goToPage('page4');
+  document.getElementById("timer").style.display = "block";
+  
+  if (!sessionStorage.getItem("startTime")) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+  timerStarted = true;
+  autoSaveToSheet();
+}
+
+function updateTimer() {
+  if (!timerStarted || testSubmitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    finalSubmit(true);
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+  document.getElementById("timer").textContent = (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+}
+setInterval(updateTimer, 1000);
+
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+// ================= SIMPAN & PULIHKAN STATE SAAT RELOAD =================
+function saveFormState() {
+  const form = document.getElementById("assessmentForm");
+  const data = {};
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+  sessionStorage.setItem("formDataState", JSON.stringify(data));
+}
+
+function loadFormState() {
+  // 1. Pulihkan seluruh isian nama, dropdown, dan jawaban
+  const savedData = sessionStorage.getItem("formDataState");
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    for (let key in data) {
+      const field = document.querySelector(`[name="${key}"]`);
+      if (field) {
+        field.value = data[key];
+      }
+    }
+  }
+
+  // 2. Sesuaikan ulang tinggi textarea yang sudah terisi agar tidak terpotong
+  document.querySelectorAll("textarea.auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+
+  // 3. Pulihkan halaman terakhir yang sedang dibuka
+  const savedPage = sessionStorage.getItem("currentPage");
+  if (savedPage && document.getElementById(savedPage)) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(savedPage).classList.add('active');
+  }
+
+  // 4. Jika sedang berada di halaman soal (page4), tampilkan kembali timer
+  if (savedPage === "page4" && sessionStorage.getItem("startTime")) {
+    timerStarted = true;
+    document.getElementById("timer").style.display = "block";
+    updateTimer();
+  }
+}
+
+// Jalankan pemulihan otomatis setiap kali halaman selesai dimuat
+window.addEventListener("DOMContentLoaded", loadFormState);
+
+// Simpan otomatis ke sessionStorage setiap ada ketikan atau perubahan pilihan
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+    saveFormState();
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+  });
+  el.addEventListener("change", saveFormState);
+});
+
+// ================= TRACK URUTAN MENJAWAB (J1 - J5) =================
+const questionKeys = ["j1", "j2", "j3", "j4", "j5"];
+questionKeys.forEach(qKey => {
+  const field = document.querySelector(`[name="${qKey}"]`);
+  if (field) {
+    field.addEventListener("input", function() {
+      const val = this.value.trim();
+      if (val.length > 0) {
+        if (!answerOrder.includes(qKey)) {
+          answerOrder.push(qKey);
+        }
+      } else {
+        // Jika peserta menghapus seluruh teks di kolom ini, keluarkan dari urutan
+        answerOrder = answerOrder.filter(item => item !== qKey);
+      }
+    });
+  }
+});
+
+// ================= DATA LOGIC (AUTOSAVE & SUBMIT) =================
+function gatherFormData(status, isTimeout) {
+  const form = document.getElementById("assessmentForm");
+  const formData = new FormData(form);
+  
+  formData.append("participant_id", getParticipantID());
+  formData.append("status", status);
+  formData.append("answer_order", answerOrder.join(" - "));
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (savedStart) {
+    let startDate = new Date(parseInt(savedStart));
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+    
+    formData.append("start_time", startDate.toString());
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining < 0 ? 0 : remaining);
+  }
+
+  if (status === "SUBMITTED") {
+    formData.append("submit_time", new Date().toString());
+    formData.append("is_timeout", isTimeout ? "YES" : "NO");
+  }
+
+  return formData;
+}
+
+function autoSaveToSheet() {
+  if (testSubmitted) return;
+  const formData = gatherFormData("ON_PROGRESS", false);
+  
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .catch(err => console.error("Autosave error", err));
+}
+
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 15000);
+  });
+});
+
+// ================= MODAL & FINAL SUBMIT =================
+function showConfirmModal() {
+  document.getElementById("confirmModal").style.display = "flex";
+}
+function closeConfirmModal() {
+  document.getElementById("confirmModal").style.display = "none";
+}
+
+let isSubmitting = false; 
+
+function finalSubmit(isTimeout) {
+  if (isSubmitting) return; 
+  isSubmitting = true;
+  testSubmitted = true;
+  
+  clearTimeout(autoSaveTimer); 
+  
+  document.getElementById("confirmModal").style.display = "none";
+  document.getElementById("timer").style.display = "none";
+  
+  // AMBIL DATA TERLEBIH DAHULU SEBELUM TAMPILAN SOAL DIHILANGKAN
+  const formData = gatherFormData("SUBMITTED", isTimeout);
+
+  document.getElementById("page4").innerHTML = `
+    <div style="text-align:center; padding: 50px;">
+      <h2>Sedang mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar.</p>
+    </div>
+  `;
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .then(() => {
+      sessionStorage.clear();
+      goToPage('page5');
+    }).catch(() => {
+      alert("Terjadi kesalahan saat mengirim. Silakan coba lagi.");
+      testSubmitted = false;
+      isSubmitting = false; 
+      document.getElementById("timer").style.display = "block";
+    });
+}
+
+// ================= SECURITY & BEHAVIOR TRACKING =================
+function sendBehavior(type) {
+  if (!timerStarted || testSubmitted) return;
+  const formData = new FormData();
+  formData.append("participant_id", getParticipantID());
+  formData.append("behavior", type);
+  formData.append("timestamp_client", new Date().toString());
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData });
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) sendBehavior("TAB_HIDDEN");
+  else sendBehavior("TAB_ACTIVE");
+});
+window.addEventListener("blur", () => sendBehavior("WINDOW_BLUR"));
+window.addEventListener("focus", () => sendBehavior("WINDOW_FOCUS"));
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12') { e.preventDefault(); sendBehavior("ATTEMPT_F12"); }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_DEVTOOLS_SHORTCUT"); }
+  if (e.ctrlKey && ['U','u'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_VIEW_SOURCE"); }
+  if (e.ctrlKey && ['A','a'].includes(e.key)) { e.preventDefault(); }
+  if (e.ctrlKey && ['C','V','X','c','v','x'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_COPY_PASTE"); }
+  if (e.key === 'PrintScreen') { sendBehavior("ATTEMPT_PRINTSCREEN"); navigator.clipboard.writeText("Tindakan screenshot dilarang."); }
+});
+
+window.addEventListener('resize', function() {
+  const threshold = 160;
+  if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+    sendBehavior("DEVTOOLS_OPENED");
+  }
+});
+</script>
+</body>
+</html>
