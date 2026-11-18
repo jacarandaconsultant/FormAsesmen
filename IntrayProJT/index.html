@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes In-Tray Assessment - Profesional</title>
+
+<style>
+/* SECURITY & RESET */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: #f0f2f5;
+  color: #1f2937;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 35px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+h2 { color: #111827; margin-top: 0; }
+h3 { color: #1f2937; }
+p { line-height: 1.6; color: #374151; }
+
+/* FORM ELEMENTS */
+label {
+  display: block;
+  margin-top: 18px;
+  font-weight: bold;
+  color: #111827;
+}
+
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+textarea.auto-expand {
+  resize: none;
+  overflow: hidden;
+  min-height: 90px;
+  line-height: 1.6;
+  transition: height 0.1s ease;
+}
+
+/* BUTTONS */
+button {
+  margin-top: 25px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.btn-primary { background: #2563eb; color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-success { background: #16a34a; color: white; }
+.btn-success:hover { background: #15803d; }
+.btn-secondary { background: #64748b; color: white; }
+.btn-secondary:hover { background: #475569; }
+
+/* TIMER */
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: #dc2626;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  display: none;
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+  z-index: 1000;
+}
+
+/* SCENARIO & INSTRUCTION BOX */
+.scenario-box {
+  background: #f8fafc;
+  padding: 25px;
+  border: 1px solid #cbd5e1;
+  border-left: 5px solid #1e3a8a;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  line-height: 1.65;
+}
+
+.scenario-subtitle {
+  font-weight: bold;
+  color: #0f172a;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.scenario-box p {
+  margin: 8px 0;
+}
+
+.scenario-box ul {
+  margin: 6px 0 12px 0;
+  padding-left: 22px;
+}
+
+.scenario-box li {
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+/* ================= EMAIL LAYOUT ================= */
+.email-card {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  margin-bottom: 28px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.email-top-bar {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.email-type-badge {
+  background: #3b82f6;
+  color: #ffffff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.wa-type-badge {
+  background: #22c55e;
+  color: #ffffff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.email-header {
+  background: #f8fafc;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.email-subject {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.email-subject:last-child {
+  margin-bottom: 0;
+}
+
+.email-meta {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.email-meta span.meta-label {
+  font-weight: 600;
+  color: #1e293b;
+  display: inline-block;
+  min-width: 65px;
+}
+
+.email-body {
+  padding: 20px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #1f2937;
+}
+
+.email-body p {
+  margin: 0 0 12px 0;
+  color: #1f2937;
+}
+
+.email-body ul {
+  margin: 8px 0 14px 0;
+  padding-left: 22px;
+}
+
+.email-body li {
+  margin-bottom: 5px;
+}
+
+.email-signature {
+  margin-top: 16px;
+  color: #334155;
+}
+
+/* ================= WHATSAPP LAYOUT ================= */
+.wa-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.wa-top-bar {
+  background: #075e54;
+  color: #ffffff;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wa-contact-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wa-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #128c7e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.wa-contact-name {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.wa-contact-status {
+  font-size: 12px;
+  color: #d1fae5;
+}
+
+.wa-chat-area {
+  background-color: #efeae2;
+  background-image: radial-gradient(#d4cdc3 1px, transparent 1px);
+  background-size: 18px 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wa-bubble {
+  max-width: 78%;
+  padding: 10px 14px 8px 14px;
+  font-size: 14px;
+  line-height: 1.55;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+}
+
+.wa-bubble p {
+  margin: 0 0 6px 0;
+  color: #111827;
+}
+
+.wa-bubble p:last-of-type {
+  margin-bottom: 2px;
+}
+
+.wa-in {
+  align-self: flex-start;
+  background: #ffffff;
+  border-radius: 0 10px 10px 10px;
+}
+
+.wa-out {
+  align-self: flex-end;
+  background: #dcf8c6;
+  border-radius: 10px 0 10px 10px;
+}
+
+.wa-sender {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.wa-in .wa-sender {
+  color: #0d9488;
+}
+
+.wa-out .wa-sender {
+  color: #15803d;
+}
+
+.wa-time {
+  font-size: 11px;
+  color: #64748b;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.wa-ticks {
+  color: #0284c7;
+  font-weight: bold;
+}
+
+/* ================= ANSWER SECTION ================= */
+.answer-section {
+  margin-top: 40px;
+  padding-top: 25px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.answer-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.answer-card label {
+  margin-top: 0;
+  font-size: 15px;
+  color: #1e3a8a;
+}
+
+/* MODAL CONFIRMATION */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.modal-buttons { margin-top: 20px; display: flex; justify-content: space-around; }
+
+</style>
+</head>
+
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+
+<div id="timer">60:00</div>
+
+<div class="container">
+  <form id="assessmentForm">
+
+    <!-- PAGE 1: WELCOME -->
+    <div id="page1" class="page active" style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
+      <h2>Selamat datang di tes In-Tray.</h2>
+      <p>Silahkan klik Masuk untuk mengisi data diri</p>
+      <button type="button" class="btn-primary" onclick="goToPage('page2')">Masuk</button>
+    </div>
+
+    <!-- PAGE 2: DATA DIRI -->
+    <div id="page2" class="page">
+      <h2>Data Diri</h2>
+      <label>Nama</label>
+      <input type="text" name="nama" required>
+
+      <label>Level Jabatan</label>
+      <select name="level_jabatan" required>
+        <option value="">-- Pilih Level Jabatan --</option>
+        <option value="Profesional 1">Profesional 1</option>
+        <option value="Profesional 2">Profesional 2</option>
+        <option value="Profesional 3">Profesional 3</option>
+      </select>
+
+      <label>Unit - Jabatan saat ini (Contoh : Divisi Pengendalian Operasi - Analyst)</label>
+      <input type="text" name="unit" required>
+
+      <button type="button" class="btn-primary" onclick="validateAndGo('page2', 'page3')">Selanjutnya</button>
+    </div>
+
+    <!-- PAGE 3: INSTRUKSI -->
+    <div id="page3" class="page">
+      <h2>Instruksi</h2>
+      <div class="scenario-box" style="white-space: pre-line;">Anda akan mendapatkan 6 (enam) dokumen yang terdiri atas 1 dokumen skenario &amp; instruksi dan 5 dokumen kasus. Bacalah dengan seksama masing-masing dokumen tersebut dan tuliskan jawaban Anda pada kolom jawaban yang disediakan di Form ini. Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 60 menit untuk seluruh tugas. 
+
+Catatan: Kasus dapat dikerjakan secara tidak berurutan. Silakan mulai mengerjakan sesuai prioritas Anda atas kasus-kasus yang ada.</div>
+      <button type="button" class="btn-success" onclick="startTest()">Mulai</button>
+    </div>
+
+    <!-- PAGE 4: TES IN-TRAY (SKENARIO + 5 DOKUMEN + 5 KOLOM JAWABAN) -->
+    <div id="page4" class="page">
+      <h2>Dokumen Skenario &amp; Kasus In-Tray</h2>
+
+      <!-- DOKUMEN SKENARIO & INSTRUKSI -->
+      <div class="scenario-box">
+        <p>PT Bangun Jiwa merupakan perusahaan konstruksi nasional yang telah beroperasi selama lebih dari 15 tahun. Perusahaan memiliki pengalaman dalam pembangunan gedung komersial, fasilitas kesehatan, kawasan hunian, dan infrastruktur.</p>
+        <p>Selama beberapa tahun terakhir, perusahaan berhasil memperoleh sejumlah proyek berskala menengah dan besar, baik dari sektor pemerintah maupun swasta.</p>
+        <p>Namun, dalam dua tahun terakhir, perusahaan menghadapi beberapa tantangan:</p>
+        <ul>
+          <li>Persaingan semakin ketat dengan masuknya perusahaan konstruksi besar dan pemain baru.</li>
+          <li>Margin keuntungan beberapa proyek mengalami penurunan akibat meningkatnya harga material dan biaya tenaga kerja.</li>
+          <li>Ketergantungan terhadap proyek pemerintah masih relatif tinggi.</li>
+          <li>Perusahaan belum optimal mengembangkan sumber pendapatan baru di luar bisnis konstruksi konvensional.</li>
+          <li>Beberapa kompetitor mulai mengembangkan layanan konstruksi terintegrasi, termasuk desain, konstruksi, pemeliharaan, dan pengelolaan fasilitas.</li>
+        </ul>
+        <p>Direksi mulai mempertimbangkan perubahan strategi bisnis agar perusahaan tidak hanya bergantung pada proyek konstruksi konvensional, tetapi juga mampu menciptakan sumber pertumbuhan baru.</p>
+
+        <div class="scenario-subtitle">Job description: Manager Pengembangan Bisnis</div>
+        <p>Anda adalah Bu Suryandari Manager Pengembangan Bisnis di PT Bangun Jaya. Sebagai Manager Pengembangan Bisnis, Anda bertanggung jawab merumuskan dan mengembangkan peluang bisnis baru serta memastikan pertumbuhan perusahaan yang berkelanjutan.</p>
+        
+        <div class="scenario-subtitle">Tanggung jawab utama meliputi:</div>
+        <ul>
+          <li>Mengidentifikasi peluang pasar dan sektor bisnis potensial.</li>
+          <li>Mengembangkan strategi pertumbuhan dan diversifikasi bisnis.</li>
+          <li>Membangun hubungan strategis dengan pelanggan, investor, mitra bisnis, dan pemangku kepentingan lainnya.</li>
+          <li>Melakukan analisis kelayakan bisnis terhadap peluang proyek dan investasi baru.</li>
+          <li>Mengembangkan kemitraan strategis, joint venture, dan kolaborasi bisnis.</li>
+          <li>Menganalisis kondisi persaingan dan perubahan tren industri konstruksi.</li>
+          <li>Mengkoordinasikan pengembangan proposal bisnis dan negosiasi dengan calon pelanggan.</li>
+          <li>Menyusun rekomendasi strategis kepada Direksi terkait pengembangan bisnis perusahaan.</li>
+        </ul>
+        <p>Sebagai manager, Anda memiliki kewenangan menginisiasi kajian bisnis, mengkoordinasikan lintas departemen, menjajaki kemitraan, dan menyusun rekomendasi investasi. Namun, keputusan investasi besar, pembentukan joint venture, serta komitmen kontrak strategis memerlukan persetujuan Direksi.</p>
+
+        <div class="scenario-subtitle">Situasi yang Anda hadapi</div>
+        <p>Hari ini adalah Senin, pukul 08.00 WIB.</p>
+        <p>Anda baru saja tiba di kantor setelah beberapa hari menghadiri kegiatan di luar kota.</p>
+        <p>Ketika membuka email dan pesan WhatsApp, Anda menemukan lima dokumen penting yang membutuhkan perhatian.</p>
+        <p>Kelima dokumen tersebut berkaitan dengan peluang ekspansi bisnis, tekanan persaingan, kebutuhan pelanggan strategis, kondisi keuangan perusahaan, dan potensi kerja sama dengan mitra bisnis.</p>
+        <p>Pada hari yang sama, Direktur Utama akan mengadakan rapat manajemen pukul 14.00 WIB untuk membahas arah pengembangan bisnis PT Bangun Jiwa untuk tiga tahun ke depan.</p>
+        <p>Direktur Utama meminta Anda menyiapkan pandangan dan rekomendasi awal mengenai beberapa peluang bisnis yang sedang dihadapi perusahaan.</p>
+        <p>Anda perlu menentukan isu mana yang harus diprioritaskan, mengevaluasi peluang dan risikonya, serta menyusun rekomendasi yang mempertimbangkan kepentingan jangka panjang perusahaan.</p>
+      </div>
+
+      <!-- INTRAY #1: MAIL INTERNAL -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #1: Mail Internal</span>
+          <span class="email-type-badge">EMAIL INTERNAL</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: Persiapan Rapat Strategi Pengembangan Bisnis 2027–2029</div>
+          <div class="email-meta">
+            <div><span class="meta-label">Kepada:</span> Suryandari – Manager Pengembangan Bisnis</div>
+          </div>
+        </div>
+        <div class="email-body">
+          <p>Bu Suryandari,</p>
+          <p>Dalam rapat manajemen pukul 14.00 WIB nanti, saya ingin kita mulai membahas arah pengembangan PT Bangun Jiwa untuk tiga tahun mendatang.</p>
+          <p>Saya melihat bahwa selama ini perusahaan masih terlalu bergantung pada proyek konstruksi konvensional, terutama proyek pemerintah. Sementara itu, persaingan semakin ketat dan margin keuntungan beberapa proyek kita terus mengalami tekanan.</p>
+          <p>Saya ingin tim Pengembangan Bisnis mulai mengevaluasi kemungkinan memasuki sektor baru, khususnya:</p>
+          <ul>
+            <li>Pembangunan dan pengelolaan fasilitas kesehatan.</li>
+            <li>Pengembangan kawasan industri dan pergudangan.</li>
+            <li>Proyek konstruksi ramah lingkungan (green building).</li>
+            <li>Layanan integrated facility management setelah pembangunan selesai.</li>
+          </ul>
+          <p>Saya tidak ingin kita sekadar mengikuti tren pasar. Kita harus mengidentifikasi peluang yang benar-benar memiliki potensi pertumbuhan, sesuai dengan kemampuan perusahaan, dan dapat memberikan keuntungan berkelanjutan.</p>
+          <p>Tolong siapkan rekomendasi awal mengenai:</p>
+          <ul>
+            <li>Sektor mana yang paling layak menjadi prioritas ekspansi?</li>
+            <li>Kapabilitas apa yang perlu kita bangun?</li>
+            <li>Apakah kita perlu mengembangkan kemampuan sendiri atau bekerja sama dengan mitra?</li>
+            <li>Risiko utama apa yang perlu dipertimbangkan?</li>
+          </ul>
+          <p>Saya berharap mendapatkan perspektif yang lebih strategis, bukan sekadar daftar peluang proyek.</p>
+          <p>Mohon siapkan bahan awal untuk rapat sore nanti.</p>
+          <div class="email-signature">
+            Salam,<br>
+            <strong>Arief Pratama</strong><br>
+            Direktur Utama
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #2: EMAIL EXTERNAL -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #2: Email External</span>
+          <span class="email-type-badge">EMAIL EKSTERNAL</span>
+        </div>
+        <div class="email-header">
+          <div class="email-meta">
+            <div><span class="meta-label">Kepada:</span> Suryandari – Manager Pengembangan Bisnis</div>
+          </div>
+        </div>
+        <div class="email-body">
+          <p>Dear Bu Suryandari,</p>
+          <p>Kami ingin menyampaikan bahwa Nusantara Industrial Estate sedang merencanakan pengembangan kawasan industri terpadu seluas sekitar 120 hektare di wilayah Jawa Tengah.</p>
+          <p>Proyek ini akan mencakup pembangunan:</p>
+          <ul>
+            <li>Gedung pabrik dan fasilitas produksi.</li>
+            <li>Gudang logistik dan pusat distribusi.</li>
+            <li>Infrastruktur jalan dan utilitas.</li>
+            <li>Fasilitas pendukung kawasan industri.</li>
+          </ul>
+          <p>Kami melihat PT Bangun Jiwa sebagai salah satu kandidat potensial untuk menjadi mitra konstruksi utama dalam proyek tersebut.</p>
+          <p>Estimasi nilai konstruksi yang akan dikerjakan diperkirakan mencapai Rp800 miliar hingga Rp1 triliun, dengan pelaksanaan secara bertahap selama tiga tahun.</p>
+          <p>Namun, kami juga sedang mempertimbangkan beberapa perusahaan konstruksi lain yang memiliki pengalaman lebih luas dalam pembangunan kawasan industri berskala besar.</p>
+          <p>Sebelum kami menentukan perusahaan-perusahaan yang akan diundang untuk mengikuti proses tender, kami ingin memperoleh gambaran lebih lanjut mengenai kapabilitas dan keunggulan kompetitif PT Bangun Jiwa.</p>
+          <p>Secara khusus, kami ingin mengetahui:</p>
+          <ul>
+            <li>Apa keunggulan utama PT Bangun Jiwa dibandingkan perusahaan konstruksi lain yang berpotensi menjadi pesaing dalam proyek ini?</li>
+            <li>Pengalaman atau portofolio proyek apa yang paling relevan untuk menunjukkan kemampuan perusahaan dalam menangani proyek berskala besar dan kompleks?</li>
+            <li>Apakah PT Bangun Jiwa memiliki keunggulan dalam efisiensi biaya, teknologi konstruksi, kualitas pengerjaan, ketepatan waktu, atau aspek lainnya?</li>
+            <li>Apakah perusahaan memiliki kapabilitas untuk memberikan layanan terintegrasi, mulai dari perencanaan, konstruksi, hingga pengelolaan fasilitas setelah proyek selesai?</li>
+          </ul>
+          <p>Kami berharap dapat memahami nilai tambah yang dapat ditawarkan PT Bangun Jiwa, bukan hanya sebagai kontraktor pelaksana, tetapi juga sebagai mitra strategis dalam pengembangan kawasan industri ini.</p>
+          <p>Kami mengundang PT Bangun Jiwa untuk melakukan presentasi awal mengenai kapabilitas, pengalaman, dan konsep kerja sama pada minggu depan. Presentasi tersebut akan menjadi salah satu bahan pertimbangan kami dalam menentukan perusahaan yang akan diundang untuk mengikuti proses tender.</p>
+          <p>Kami berharap dapat menerima konfirmasi dari Ibu paling lambat hari Rabu.</p>
+          <div class="email-signature">
+            Best regards,<br>
+            <strong>Michael Tan</strong><br>
+            Director – Nusantara Industrial Estate
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #3: MAIL INTERNAL -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #3: Mail Internal</span>
+          <span class="email-type-badge">EMAIL INTERNAL</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: Evaluasi Margin Proyek dan Kelayakan Ekspansi Bisnis</div>
+          <div class="email-meta">
+            <div><span class="meta-label">Kepada:</span> Suryandari – Manager Pengembangan Bisnis</div>
+          </div>
+        </div>
+        <div class="email-body">
+          <p>Bu Suryandari,</p>
+          <p>Saya ingin menyampaikan beberapa hal terkait kondisi keuangan perusahaan yang perlu menjadi pertimbangan dalam rencana ekspansi bisnis.</p>
+          <p>Berdasarkan evaluasi semester terakhir, kami menemukan beberapa tren yang perlu diperhatikan:</p>
+          <ul>
+            <li>Margin keuntungan rata-rata proyek konstruksi turun dari 12% menjadi 8,5% dalam dua tahun terakhir.</li>
+            <li>Biaya material konstruksi meningkat sekitar 14%.</li>
+            <li>Beberapa proyek mengalami keterlambatan pembayaran dari pelanggan, sehingga memengaruhi arus kas perusahaan.</li>
+            <li>Sekitar 65% pendapatan perusahaan masih berasal dari proyek pemerintah.</li>
+          </ul>
+          <p>Saya memahami bahwa perusahaan membutuhkan sumber pertumbuhan baru. Namun, saya khawatir jika kita terlalu agresif mengambil peluang baru tanpa mempertimbangkan kemampuan pendanaan dan risiko proyek.</p>
+          <p>Saya mendengar tim Anda sedang mengevaluasi beberapa peluang ekspansi, termasuk proyek kawasan industri dan layanan pengelolaan fasilitas.</p>
+          <p>Sebelum perusahaan mengambil keputusan, saya ingin meminta agar setiap peluang bisnis dianalisis berdasarkan:</p>
+          <ul>
+            <li>Estimasi investasi awal.</li>
+            <li>Potensi margin dan arus kas.</li>
+            <li>Risiko keterlambatan pembayaran.</li>
+            <li>Kebutuhan modal kerja.</li>
+            <li>Periode pengembalian investasi.</li>
+          </ul>
+          <p>Menurut saya, perusahaan sebaiknya tidak hanya mengejar pertumbuhan omzet, tetapi juga memperhatikan kualitas pendapatan dan profitabilitas.</p>
+          <p>Mohon hal ini menjadi pertimbangan dalam rekomendasi strategis Anda.</p>
+          <div class="email-signature">
+            Salam,<br>
+            <strong>Rina Kusuma</strong><br>
+            Finance Director
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #4: PERCAKAPAN WA -->
+      <div class="wa-card">
+        <div class="email-top-bar">
+          <span>INTRAY #4: Percakapan WA</span>
+          <span class="wa-type-badge">PESAN WHATSAPP</span>
+        </div>
+        <div class="wa-top-bar">
+          <div class="wa-contact-info">
+            <div class="wa-avatar">D</div>
+            <div>
+              <div class="wa-contact-name">David Lim (GlobalBuild)</div>
+              <div class="wa-contact-status">online</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wa-chat-area">
+          <!-- Pesan 1 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <div class="wa-sender">David Lim (GlobalBuild)</div>
+            <p>Selamat pagi, Bu Suryandari. Apa kabar? Semoga Ibu dalam keadaan baik.</p>
+            <div class="wa-time">08.30</div>
+          </div>
+
+          <!-- Pesan 2 (Keluar) -->
+          <div class="wa-bubble wa-out">
+            <div class="wa-sender">Suryandari (Anda)</div>
+            <p>Selamat pagi, Pak David. Kabar baik, terima kasih. Semoga Bapak juga sehat. Ada yang bisa saya bantu?</p>
+            <div class="wa-time">08.31 <span class="wa-ticks">✓✓</span></div>
+          </div>
+
+          <!-- Pesan 3 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <div class="wa-sender">David Lim (GlobalBuild)</div>
+            <p>Saya ingin menindaklanjuti pembicaraan kita sebelumnya mengenai kemungkinan kerja sama antara GlobalBuild Engineering dan PT Bangun Jiwa.</p>
+            <p>Kami sebenarnya cukup serius mempertimbangkan peluang untuk membangun kemitraan jangka panjang dengan perusahaan lokal yang memiliki pengalaman dan jaringan kuat di Indonesia.</p>
+            <div class="wa-time">08.32</div>
+          </div>
+
+          <!-- Pesan 4 (Keluar) -->
+          <div class="wa-bubble wa-out">
+            <div class="wa-sender">Suryandari (Anda)</div>
+            <p>Menarik sekali, Pak. Apakah Bapak sudah memiliki gambaran lebih konkret mengenai bentuk kerja sama yang ingin dijajaki?</p>
+            <div class="wa-time">08.33 <span class="wa-ticks">✓✓</span></div>
+          </div>
+
+          <!-- Pesan 5 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <div class="wa-sender">David Lim (GlobalBuild)</div>
+            <p>Kami sedang mempertimbangkan pembentukan joint venture untuk mengembangkan proyek konstruksi berskala besar di Indonesia, khususnya proyek infrastruktur dan kawasan industri.</p>
+            <p>GlobalBuild memiliki pengalaman internasional dalam teknologi konstruksi modular, manajemen proyek berskala besar, serta penggunaan teknologi digital untuk pengendalian proyek.</p>
+            <div class="wa-time">08.34</div>
+          </div>
+
+          <!-- Pesan 6 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <p>Sebagai gambaran awal, kami mengusulkan struktur kepemilikan saham 60% untuk GlobalBuild dan 40% untuk PT Bangun Jiwa.</p>
+            <p>Kami akan menyediakan teknologi, sistem manajemen proyek, dan akses ke jaringan internasional. Sementara PT Bangun Jiwa dapat memberikan akses pasar lokal, jaringan bisnis, serta pengalaman operasional di Indonesia.</p>
+            <div class="wa-time">08.37</div>
+          </div>
+
+          <!-- Pesan 7 (Masuk) -->
+          <div class="wa-bubble wa-in">
+            <p>Ini masih pembicaraan awal dan belum menjadi proposal resmi.</p>
+            <p>Kami juga sedang mempertimbangkan beberapa peluang proyek potensial. Jika kerja sama dapat disepakati dalam dua bulan ke depan, kita bisa mulai mempersiapkan penawaran bersama untuk beberapa proyek tersebut.</p>
+            <div class="wa-time">08.40</div>
+          </div>
+
+          <!-- Pesan 8 (Keluar / Placeholder) -->
+          <div class="wa-bubble wa-out">
+            <div class="wa-sender">Suryandari (Anda)</div>
+            <p>…………………….</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTRAY #5: MAIL INTERNAL -->
+      <div class="email-card">
+        <div class="email-top-bar">
+          <span>INTRAY #5: Mail Internal</span>
+          <span class="email-type-badge">EMAIL INTERNAL</span>
+        </div>
+        <div class="email-header">
+          <div class="email-subject">Subjek: Kesiapan Operasional Menghadapi Ekspansi Bisnis</div>
+          <div class="email-meta">
+            <div><span class="meta-label">Kepada:</span> Suryandari – Manager Pengembangan Bisnis</div>
+          </div>
+        </div>
+        <div class="email-body">
+          <p>Bu Suryandari,</p>
+          <p>Saya mendengar bahwa tim Pengembangan Bisnis sedang menjajaki beberapa peluang proyek baru, termasuk proyek kawasan industri berskala besar dan kemungkinan kerja sama dengan perusahaan asing.</p>
+          <p>Saya mendukung upaya pengembangan bisnis perusahaan. Namun, saya ingin menyampaikan bahwa kapasitas operasional kita saat ini perlu menjadi perhatian.</p>
+          <p>Beberapa tantangan yang sedang kami hadapi:</p>
+          <ul>
+            <li>Sebagian besar Project Manager berpengalaman saat ini sudah ditempatkan pada proyek-proyek yang sedang berjalan.</li>
+            <li>Perusahaan masih memiliki keterbatasan tenaga ahli dalam pembangunan kawasan industri berskala besar.</li>
+            <li>Sistem pengendalian proyek dan penggunaan teknologi digital kita masih perlu ditingkatkan.</li>
+            <li>Beberapa proyek berjalan mengalami keterlambatan karena keterbatasan koordinasi antara tim lapangan dan kantor pusat.</li>
+          </ul>
+          <p>Saya khawatir jika kita mengambil terlalu banyak proyek baru tanpa memperkuat kapabilitas internal, kualitas pelaksanaan proyek yang sedang berjalan justru akan menurun.</p>
+          <p>Saya ingin tim Pengembangan Bisnis mempertimbangkan kesiapan operasional sebelum mengusulkan ekspansi.</p>
+          <p>Menurut saya, kita perlu menjawab satu pertanyaan penting:</p>
+          <p>Apakah perusahaan sudah benar-benar siap untuk tumbuh, atau justru perlu memperkuat fondasi operasional terlebih dahulu?</p>
+          <p>Saya berharap hal ini dapat dibahas dalam rapat manajemen nanti.</p>
+          <div class="email-signature">
+            Salam,<br>
+            <strong>Hendra Wijaya</strong><br>
+            Operations Director
+          </div>
+        </div>
+      </div>
+
+      <!-- BAGIAN KOLOM JAWABAN (5 DOKUMEN) -->
+      <div class="answer-section">
+        <h2>Lembar Jawaban In-Tray</h2>
+        <p style="font-size: 14px; color: #475569; margin-bottom: 20px;">
+          Tuliskan tindakan dan respons konkret Anda pada masing-masing kolom di bawah ini sesuai prioritas Anda.
+        </p>
+
+        <div class="answer-card">
+          <label>1. INTRAY #1 (Mail Internal) – Persiapan Rapat Strategi Pengembangan Bisnis 2027–2029</label>
+          <textarea name="j1" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>2. INTRAY #2 (Email External) – Undangan Presentasi Proyek Nusantara Industrial Estate</label>
+          <textarea name="j2" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>3. INTRAY #3 (Mail Internal) – Evaluasi Margin Proyek dan Kelayakan Ekspansi Bisnis</label>
+          <textarea name="j3" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>4. INTRAY #4 (Percakapan WA) – Penjajakan Joint Venture dengan GlobalBuild Engineering</label>
+          <textarea name="j4" class="auto-expand" required></textarea>
+        </div>
+
+        <div class="answer-card">
+          <label>5. INTRAY #5 (Mail Internal) – Kesiapan Operasional Menghadapi Ekspansi Bisnis</label>
+          <textarea name="j5" class="auto-expand" required></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="btn-success" onclick="showConfirmModal()">Kirim Jawaban</button>
+    </div>
+
+    <!-- PAGE 5: SELESAI -->
+    <div id="page5" class="page" style="text-align: center; margin-top: 100px; margin-bottom: 100px;">
+      <h2>Jawaban anda sudah terkirim</h2>
+      <p>Silahkan tunggu instruksi lebih lanjut untuk tes berikutnya.</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- MODAL KONFIRMASI -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <h3>Konfirmasi</h3>
+    <p>Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeConfirmModal()">Tidak</button>
+      <button class="btn-success" onclick="finalSubmit(false)">Ya, Kirim</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= KONFIGURASI URL APP SCRIPT =================
+// GANTI URL DI BAWAH INI DENGAN URL DEPLOYMENT APP SCRIPT ANDA
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyjNbRt5tJ4nbnSRYBrG1yfIePFOTUT6hpke-7fgdAUhJ-IizEosmwhcEnrR10ydSna/exec";
+
+// ================= VARIABLES =================
+let duration = 60 * 60; // 60 Menit
+let timerStarted = false;
+let testSubmitted = false;
+let autoSaveTimer = null;
+let answerOrder = []; // Mencatat urutan pengerjaan (misal: j1 - j3 - j2 - j5 - j4)
+
+// ================= NAVIGATION =================
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  sessionStorage.setItem("currentPage", pageId);
+  window.scrollTo(0, 0);
+}
+
+function validateAndGo(current, next) {
+  const section = document.getElementById(current);
+  const inputs = section.querySelectorAll("input, select");
+  let valid = true;
+  
+  inputs.forEach(input => {
+    if (input.required && !input.value.trim()) {
+      input.style.borderColor = "red";
+      valid = false;
+    } else {
+      input.style.borderColor = "#cbd5e1";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua data diri dengan lengkap.");
+    return;
+  }
+  goToPage(next);
+}
+
+// ================= PARTICIPANT ID =================
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="nama"]').value || "anon";
+  let base = nama.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  let id = base + "_" + Date.now();
+  sessionStorage.setItem("participant_id", id);
+  return id;
+}
+
+// ================= START TEST & TIMER =================
+function startTest() {
+  goToPage('page4');
+  document.getElementById("timer").style.display = "block";
+  
+  if (!sessionStorage.getItem("startTime")) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+  timerStarted = true;
+  autoSaveToSheet();
+}
+
+function updateTimer() {
+  if (!timerStarted || testSubmitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    finalSubmit(true);
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+  document.getElementById("timer").textContent = (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+}
+setInterval(updateTimer, 1000);
+
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+});
+
+// ================= TRACK URUTAN MENJAWAB (J1 - J5) =================
+const questionKeys = ["j1", "j2", "j3", "j4", "j5"];
+questionKeys.forEach(qKey => {
+  const field = document.querySelector(`[name="${qKey}"]`);
+  if (field) {
+    field.addEventListener("input", function() {
+      const val = this.value.trim();
+      if (val.length > 0) {
+        if (!answerOrder.includes(qKey)) {
+          answerOrder.push(qKey);
+        }
+      } else {
+        // Jika peserta menghapus seluruh teks di kolom ini, keluarkan dari urutan
+        answerOrder = answerOrder.filter(item => item !== qKey);
+      }
+      sessionStorage.setItem("answerOrder", JSON.stringify(answerOrder));
+    });
+  }
+});
+
+// ================= DATA LOGIC (AUTOSAVE & SUBMIT) =================
+function gatherFormData(status, isTimeout) {
+  const form = document.getElementById("assessmentForm");
+  const formData = new FormData(form);
+  
+  formData.append("participant_id", getParticipantID());
+  formData.append("status", status);
+  formData.append("answer_order", answerOrder.join(" - "));
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (savedStart) {
+    let startDate = new Date(parseInt(savedStart));
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+    
+    formData.append("start_time", startDate.toString());
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining < 0 ? 0 : remaining);
+  }
+
+  if (status === "SUBMITTED") {
+    formData.append("submit_time", new Date().toString());
+    formData.append("is_timeout", isTimeout ? "YES" : "NO");
+  }
+
+  return formData;
+}
+
+function autoSaveToSheet() {
+  if (testSubmitted) return;
+  const formData = gatherFormData("ON_PROGRESS", false);
+  
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .catch(err => console.error("Autosave error", err));
+}
+
+// ================= SIMPAN & PULIHKAN STATE SAAT RELOAD =================
+function saveFormState() {
+  const form = document.getElementById("assessmentForm");
+  const data = {};
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+  sessionStorage.setItem("formDataState", JSON.stringify(data));
+}
+
+function loadFormState() {
+  // 1. Pulihkan seluruh isian input, select, dan textarea
+  const savedData = sessionStorage.getItem("formDataState");
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    for (let key in data) {
+      const field = document.querySelector(`[name="${key}"]`);
+      if (field) {
+        field.value = data[key];
+      }
+    }
+  }
+
+  // 2. Sesuaikan ulang tinggi textarea yang sudah terisi
+  document.querySelectorAll("textarea.auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+
+  // 3. Pulihkan urutan pengerjaan (khusus In-Tray)
+  const savedOrder = sessionStorage.getItem("answerOrder");
+  if (savedOrder) {
+    answerOrder = JSON.parse(savedOrder);
+  }
+
+  // 4. Pulihkan halaman terakhir yang dibuka
+  const savedPage = sessionStorage.getItem("currentPage");
+  if (savedPage && document.getElementById(savedPage)) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(savedPage).classList.add('active');
+  }
+
+  // 5. Jika sedang berada di halaman pengerjaan (page4), jalankan kembali timer
+  if (savedPage === "page4" && sessionStorage.getItem("startTime")) {
+    timerStarted = true;
+    document.getElementById("timer").style.display = "block";
+    updateTimer();
+  }
+}
+
+window.addEventListener("DOMContentLoaded", loadFormState);
+
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+    saveFormState();
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+  });
+  el.addEventListener("change", saveFormState);
+});
+
+// ================= MODAL & FINAL SUBMIT =================
+function showConfirmModal() {
+  document.getElementById("confirmModal").style.display = "flex";
+}
+function closeConfirmModal() {
+  document.getElementById("confirmModal").style.display = "none";
+}
+
+let isSubmitting = false; 
+
+function finalSubmit(isTimeout) {
+  if (isSubmitting) return; 
+  isSubmitting = true;
+  testSubmitted = true;
+  
+  clearTimeout(autoSaveTimer); 
+  
+  document.getElementById("confirmModal").style.display = "none";
+  document.getElementById("timer").style.display = "none";
+  
+  // AMBIL DATA TERLEBIH DAHULU SEBELUM TAMPILAN SOAL DIHILANGKAN
+  const formData = gatherFormData("SUBMITTED", isTimeout);
+
+  document.getElementById("page4").innerHTML = `
+    <div style="text-align:center; padding: 50px;">
+      <h2>Sedang mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar.</p>
+    </div>
+  `;
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .then(() => {
+      sessionStorage.clear();
+      goToPage('page5');
+    }).catch(() => {
+      alert("Terjadi kesalahan saat mengirim. Silakan coba lagi.");
+      testSubmitted = false;
+      isSubmitting = false; 
+      document.getElementById("timer").style.display = "block";
+    });
+}
+
+// ================= SECURITY & BEHAVIOR TRACKING =================
+function sendBehavior(type) {
+  if (!timerStarted || testSubmitted) return;
+  const formData = new FormData();
+  formData.append("participant_id", getParticipantID());
+  formData.append("behavior", type);
+  formData.append("timestamp_client", new Date().toString());
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData });
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) sendBehavior("TAB_HIDDEN");
+  else sendBehavior("TAB_ACTIVE");
+});
+window.addEventListener("blur", () => sendBehavior("WINDOW_BLUR"));
+window.addEventListener("focus", () => sendBehavior("WINDOW_FOCUS"));
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12') { e.preventDefault(); sendBehavior("ATTEMPT_F12"); }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_DEVTOOLS_SHORTCUT"); }
+  if (e.ctrlKey && ['U','u'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_VIEW_SOURCE"); }
+  if (e.ctrlKey && ['A','a'].includes(e.key)) { e.preventDefault(); }
+  if (e.ctrlKey && ['C','V','X','c','v','x'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_COPY_PASTE"); }
+  if (e.key === 'PrintScreen') { sendBehavior("ATTEMPT_PRINTSCREEN"); navigator.clipboard.writeText("Tindakan screenshot dilarang."); }
+});
+
+window.addEventListener('resize', function() {
+  const threshold = 160;
+  if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+    sendBehavior("DEVTOOLS_OPENED");
+  }
+});
+</script>
+</body>
+</html>
