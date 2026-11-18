@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Business Case Study</title>
+
+<style>
+/* SECURITY & RESET */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f7fa;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+h2, h3 { color: #333; }
+p { line-height: 1.6; color: #444; }
+
+/* FORM ELEMENTS */
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  /* Pengecualian agar kolom input bisa di-klik dan diketik */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+textarea.auto-expand {
+  resize: none;
+  overflow: hidden;
+  min-height: 50px;
+  line-height: 1.5;
+  transition: height 0.1s ease;
+}
+
+/* BUTTONS */
+button {
+  margin-top: 25px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+.btn-primary { background: #007bff; color: white; }
+.btn-primary:hover { background: #0056b3; }
+.btn-success { background: #28a745; color: white; }
+.btn-success:hover { background: #218838; }
+.btn-secondary { background: #6c757d; color: white; }
+.btn-secondary:hover { background: #5a6268; }
+
+/* TIMER */
+#timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: #dc3545;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  display: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* CASE STUDY TEXT & TABLE */
+.case-box {
+  background: #fdfdfd;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  white-space: pre-line;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+table, th, td {
+  border: 1px solid #333;
+}
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+th { background-color: #f0f0f0; }
+td:first-child { text-align: left; }
+
+/* MODAL CONFIRMATION */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.modal-box {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+}
+.modal-buttons { margin-top: 20px; display: flex; justify-content: space-around; }
+
+</style>
+</head>
+
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+
+<div id="timer">30:00</div>
+
+<div class="container">
+  <form id="assessmentForm">
+
+    <!-- PAGE 1: WELCOME -->
+    <div id="page1" class="page active" style="text-align: center; margin-top: 50px;">
+      <h2>Selamat datang di tes Bussiness Case Study.</h2>
+      <p>Silahkan klik Masuk untuk mengisi data diri</p>
+      <button type="button" class="btn-primary" onclick="goToPage('page2')">Masuk</button>
+    </div>
+
+    <!-- PAGE 2: DATA DIRI -->
+    <div id="page2" class="page">
+      <h2>Data Diri</h2>
+      <label>Nama</label>
+      <input type="text" name="nama" required>
+
+      <label>Level Jabatan</label>
+      <select name="level_jabatan" required>
+        <option value="">-- Pilih Level Jabatan --</option>
+        <option value="Profesional 1">Profesional 1</option>
+        <option value="Profesional 2">Profesional 2</option>
+        <option value="Profesional 3">Profesional 3</option>
+      </select>
+
+      <label>Unit</label>
+      <input type="text" name="unit" required>
+
+      <button type="button" class="btn-primary" onclick="validateAndGo('page2', 'page3')">Selanjutnya</button>
+    </div>
+
+    <!-- PAGE 3: INSTRUKSI -->
+    <div id="page3" class="page">
+      <h2>Instruksi</h2>
+      <div class="case-box">
+        Anda akan mendapatkan skenario bisnis. Bacalah dengan seksama skenario tersebut, dan jawablah pertanyaan yang diberikan. Mohon untuk mendeskripsikan jawaban Anda dengan lengkap dan terperinci sesuai waktu yang disediakan, yaitu 30 menit.
+      </div>
+      <button type="button" class="btn-success" onclick="startTest()">Mulai</button>
+    </div>
+
+    <!-- PAGE 4: TES (SOAL UTUH) -->
+    <div id="page4" class="page">
+      <h2>Studi Kasus</h2>
+      
+      <div class="case-box">
+        <!-- GAMBAR DARI GOOGLE DRIVE -->
+        <img src="https://lh3.googleusercontent.com/d/1DxCG2JXtFZbofjW_KN4unD4ycqmutO5m" style="width: 100%; border-radius: 8px;">
+        
+        <!-- SUMBER GAMBAR KECIL DI BAWAHNYA -->
+        <div style="font-size: 12px; color: #777; margin-top: 5px; margin-bottom: 20px; line-height: 1.2;">
+          Sumber: https://www.liputan6.com/tag/industri-tekstil
+        </div>
+
+CV Sinar Tenun Nusantara merupakan usaha tekstil skala menengah yang cukup terkenal akan kualitas produknya. CV Sinar Tenun Nusantara didirikan oleh ayah Anda 35 tahun yang lalu di salah satu daerah di Jawa Barat. Pabrik ini bermula dari industri rumahan dan kini menjadi tumpuan ekonomi bagi desa-desa setempat, dengan mempekerjakan 450 orang warga sekitar yang mayoritas adalah Perempuan Kepala Keluarga yang sebagian besar bekerja sebagai penenun, penjahit, serta bagian finishing produk. Fokus produksi mereka adalah kain dasar dari bahan katun yang menawarkan kualitas bahan yang sangat baik, namun tetap dibanderol dengan harga yang terjangkau, sehingga banyak digunakan oleh pelaku usaha grosir, konveksi, serta distributor tekstil sebagai bahan baku untuk proses produksi lanjutan. Sekitar 60% penjualan disalurkan ke pasar grosir domestik, sementara 40% lainnya diekspor ke beberapa negara Asia Tenggara melalui perantara pihak ketiga.
+
+Dalam enam bulan terakhir, Anda telah mengambil alih posisi sebagai Pimpinan Perusahaan menggantikan ayah Anda yang pensiun karena alasan kesehatan. Transisi kepemimpinan ini terjadi tepat di saat industri tekstil nasional sedang menghadapi berbagai dinamika yang kompleks. Sejak awal tahun, pemerintah menerapkan pelonggaran regulasi impor tekstil dan produk tekstil untuk meningkatkan ketersediaan barang di pasar. Dampak langsung dari kebijakan ini adalah membanjirnya produk tekstil dari Tiongkok ke pasar lokal. Berkat keunggulan produksi massal di negara asalnya, tekstil impor tersebut dijual dengan harga 35% hingga 40% lebih murah dibandingkan harga modal produksi CV Sinar Tenun Nusantara, serta menawarkan variasi desain, motif, dan finishing yang lebih modern serta mengikuti tren pasar.
+
+Dalam periode yang sama, pelemahan nilai tukar Rupiah terhadap Dolar AS turut memberikan tekanan terhadap perekonomian domestik, yang berkontribusi pada menurunnya daya beli masyarakat, khususnya pada segmen kelas menengah ke bawah. Dampak ini mulai terasa pada tingkat distributor yang menjadi pelanggan utama perusahaan. Melambatnya perputaran barang di pasar membuat para distributor cenderung mengurangi volume pemesanan, lebih selektif dalam memilih produk, serta dalam beberapa kasus meminta penyesuaian skema pembayaran dengan penundaan hingga 30–45 hari dari kesepakatan awal. Di tengah kondisi tersebut, sebagian distributor juga mulai beralih ke produk impor yang dinilai lebih kompetitif dari sisi harga.
+
+<strong>Tabel 1. Data Kinerja CV Sinar Tenun Nusantara</strong>
+<table>
+  <thead>
+    <tr>
+      <th>Indikator</th>
+      <th>Okt</th>
+      <th>Nov</th>
+      <th>Des</th>
+      <th>Jan</th>
+      <th>Feb</th>
+      <th>Mar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Volume Produksi (unit)</td>
+      <td>12.500</td>
+      <td>12.200</td>
+      <td>11.800</td>
+      <td>10.900</td>
+      <td>9.800</td>
+      <td>8.600</td>
+    </tr>
+    <tr>
+      <td>Penjualan Domestik (Rp)</td>
+      <td>875 jt</td>
+      <td>860 jt</td>
+      <td>820 jt</td>
+      <td>760 jt</td>
+      <td>690 jt</td>
+      <td>610 jt</td>
+    </tr>
+    <tr>
+      <td>Penjualan Ekspor (Rp)</td>
+      <td>420 jt</td>
+      <td>405 jt</td>
+      <td>390 jt</td>
+      <td>350 jt</td>
+      <td>310 jt</td>
+      <td>280 jt</td>
+    </tr>
+    <tr>
+      <td>Persediaan (unit)</td>
+      <td>2.100</td>
+      <td>2.400</td>
+      <td>2.900</td>
+      <td>3.600</td>
+      <td>4.200</td>
+      <td>5.100</td>
+    </tr>
+    <tr>
+      <td>Biaya Operasional (Rp)</td>
+      <td>610 jt</td>
+      <td>625 jt</td>
+      <td>640 jt</td>
+      <td>670 jt</td>
+      <td>690 jt</td>
+      <td>720 jt</td>
+    </tr>
+  </tbody>
+</table>
+
+Pergeseran situasi pasar dalam beberapa waktu terakhir mulai memunculkan dinamika baru yang secara langsung memengaruhi hubungan perusahaan dengan pelanggannya. Para distributor lokal yang selama ini menjadi mitra utama mulai menghadapi tekanan akibat menurunnya daya beli masyarakat kelas menengah ke bawah. Kondisi ini berdampak pada melambatnya perputaran stok di tingkat distributor, sehingga mereka cenderung lebih berhati-hati dalam melakukan pembelian. Volume pemesanan ke CV Sinar Tenun Nusantara pun mengalami penyesuaian, tidak lagi sebesar sebelumnya, disertai dengan kecenderungan untuk lebih selektif dalam memilih jenis produk yang dianggap memiliki pergerakan pasar lebih cepat. Dalam beberapa kasus, pola pembayaran juga mengalami pergeseran, di mana distributor mulai meminta kelonggaran waktu pembayaran hingga sekitar 30–45 hari dari jadwal yang telah disepakati sebelumnya.
+
+Di sisi lain, dinamika pada konsumen akhir juga menunjukkan perubahan yang tidak kalah signifikan. Masyarakat sebagai pengguna akhir produk pakaian mulai menunjukkan preferensi terhadap produk dengan harga yang lebih terjangkau, serta desain, motif, dan finishing yang lebih variatif dan mengikuti tren. Pergeseran preferensi ini, khususnya pada kelompok konsumen yang lebih muda, secara tidak langsung memengaruhi pola permintaan yang diterima oleh pelaku usaha konveksi dan perusahaan garmen, yang merupakan pelanggan utama CV Sinar Tenun Nusantara. Dalam konteks ini, kualitas produk perusahaan yang selama ini dikenal konsisten namun cenderung sederhana mulai dipersepsikan kurang mampu mengakomodasi perkembangan selera pasar. 
+
+Pada pasar ekspor, perusahaan juga menghadapi perlambatan permintaan. Berdasarkan informasi dari mitra distributor, kondisi ini dipengaruhi oleh penyesuaian permintaan di negara tujuan akibat tekanan ekonomi global, meningkatnya persaingan harga dengan produsen dari negara lain, serta pergeseran preferensi pasar menuju produk berbasis sustainable fashion dan fast fashion yang lebih adaptif terhadap tren. Meningkatnya perhatian terhadap isu keberlanjutan mulai membentuk ekspektasi baru di pasarn ekspor. Dalam beberapa kasus, hal ini mulai memengaruhi preferensi mereka terhadap pemasok bahan baku yang mampu memenuhi standar ramah lingkungan. Perusahaan garmen dan brand fesyen secara bertahap menunjukkan kecenderungan untuk lebih selektif dalam memilih pemasok bahan baku, dengan mempertimbangkan aspek ramah lingkungan serta keberlanjutan proses produksi.
+
+Permasalahan-permasalahan tersebut terjadi bersamaan dengan meningkatnya beban operasional perusahaan. Meskipun proses produksi dilakukan secara lokal, sekitar 70% bahan baku utama, seperti benang sintetis dengan spesifikasi tertentu dan pewarna kimia, masih bergantung pada impor. Pelemahan nilai tukar Rupiah dalam beberapa bulan terakhir menyebabkan biaya pengadaan bahan baku meningkat secara signifikan, sehingga margin keuntungan perusahaan yang sebelumnya sudah terbatas menjadi semakin berkurang.
+
+<strong>Tabel 2. Kenaikan Nilai Tukar Uang dan Bahan Baku</strong>
+<table>
+  <thead>
+    <tr>
+      <th>Indikator</th>
+      <th>Des</th>
+      <th>Jan</th>
+      <th>Feb</th>
+      <th>Mar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nilai Tukar (IDR/USD)</td>
+      <td>15.100</td>
+      <td>15.450</td>
+      <td>15.800</td>
+      <td>16.250</td>
+    </tr>
+    <tr>
+      <td>Harga Bahan Baku Benang/ton</td>
+      <td>45 jt</td>
+      <td>48 jt</td>
+      <td>54 jt</td>
+      <td>61 jt</td>
+    </tr>
+    <tr>
+      <td>Harga Bahan Baku Kimia/Drum</td>
+      <td>30 jt</td>
+      <td>33,5 jt</td>
+      <td>39 jt</td>
+      <td>47,5 jt</td>
+    </tr>
+  </tbody>
+</table>
+
+Kombinasi antara penurunan permintaan, perubahan perilaku pasar, serta kenaikan biaya produksi secara bertahap menekan kondisi keuangan perusahaan. Dengan arus kas yang semakin terbatas, di sisi lain perusahaan juga dihadapkan pada tekanan sosial untuk mempertahankan keberlangsungan pekerjaan bagi ratusan tenaga kerja lokal yang bergantung pada operasional pabrik. Situasi ini menempatkan CV Sinar Tenun Nusantara dalam kondisi operasional yang semakin menantang dan memerlukan respons strategis yang tepat.
+
+Sebagai pimpinan baru di perusahaan ini, Anda diharapkan dapat memahami situasi secara menyeluruh dan mempertimbangkan langkah-langkah yang tidak hanya mampu merespons kondisi saat ini, tetapi juga menjaga keberlangsungan usaha dalam jangka panjang.
+      </div>
+
+      <label>Soal 1. Berdasarkan kondisi yang dihadapi CV Sinar Tenun Nusantara, apa yang Anda identifikasi sebagai akar permasalahan utama perusahaan saat ini?</label>
+      <textarea name="j1" class="auto-expand" required></textarea>
+
+      <label>Soal 2. Sebagai pimpinan perusahaan, langkah strategis apa yang akan Anda ambil untuk menjaga keberlangsungan usaha dalam jangka panjang?</label>
+      <textarea name="j2" class="auto-expand" required></textarea>
+
+      <label>Soal 3. Bagaimana Anda akan menyesuaikan produk atau pendekatan perusahaan agar tetap relevan dengan kebutuhan pelanggan?</label>
+      <textarea name="j3" class="auto-expand" required></textarea>
+
+      <label>Soal 4. Bagaimana Anda akan menyusun Langkah-langkah prioritas penanganan masalah yang dihadapi perusahaan saat ini?</label>
+      <textarea name="j4" class="auto-expand" required></textarea>
+
+      <button type="button" class="btn-success" onclick="showConfirmModal()">Kirim Jawaban</button>
+    </div>
+
+    <!-- PAGE 5: SELESAI -->
+    <div id="page5" class="page" style="text-align: center; margin-top: 100px;">
+      <h2>Jawaban anda sudah terkirim</h2>
+      <p>Silahkan tunggu instruksi lebih lanjut untuk tes berikutnya.</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- MODAL KONFIRMASI -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <h3>Konfirmasi</h3>
+    <p>Apakah Anda yakin ingin mengirim jawaban sekarang?</p>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeConfirmModal()">Tidak</button>
+      <button class="btn-success" onclick="finalSubmit(false)">Ya, Kirim</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= KONFIGURASI URL APP SCRIPT =================
+// GANTI URL DI BAWAH INI DENGAN URL DEPLOYMENT APP SCRIPT ANDA
+const GAS_URL = "https://script.google.com/macros/s/AKfycbz3D7rCmjHE1G2f8kofcwHyrGepy1oLqC9fd_uctTr6hb34WJv_8q2DDcUnH7E7x7XG0w/exec";
+
+// ================= VARIABLES =================
+let duration = 30 * 60; // 30 Menit
+let timerStarted = false;
+let testSubmitted = false;
+let autoSaveTimer = null;
+let lastActivity = Date.now();
+
+// ================= NAVIGATION =================
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  sessionStorage.setItem("currentPage", pageId); // <-- TAMBAHKAN BARIS INI
+}
+
+function validateAndGo(current, next) {
+  const section = document.getElementById(current);
+  const inputs = section.querySelectorAll("input, select");
+  let valid = true;
+  
+  inputs.forEach(input => {
+    if (input.required && !input.value.trim()) {
+      input.style.borderColor = "red";
+      valid = false;
+    } else {
+      input.style.borderColor = "#ccc";
+    }
+  });
+
+  if (!valid) {
+    alert("Harap isi semua data diri dengan lengkap.");
+    return;
+  }
+  goToPage(next);
+}
+
+// ================= PARTICIPANT ID =================
+function getParticipantID() {
+  let existing = sessionStorage.getItem("participant_id");
+  if (existing) return existing;
+
+  const nama = document.querySelector('[name="nama"]').value || "anon";
+  let base = nama.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+  let id = base + "_" + Date.now();
+  sessionStorage.setItem("participant_id", id);
+  return id;
+}
+
+// ================= START TEST & TIMER =================
+function startTest() {
+  goToPage('page4');
+  document.getElementById("timer").style.display = "block";
+  
+  if (!sessionStorage.getItem("startTime")) {
+    sessionStorage.setItem("startTime", Date.now());
+  }
+  timerStarted = true;
+  autoSaveToSheet();
+}
+
+function updateTimer() {
+  if (!timerStarted || testSubmitted) return;
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (!savedStart) return;
+
+  let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+  let remaining = duration - elapsed;
+
+  if (remaining <= 0) {
+    finalSubmit(true);
+    return;
+  }
+
+  let m = Math.floor(remaining / 60);
+  let s = remaining % 60;
+  document.getElementById("timer").textContent = (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+}
+setInterval(updateTimer, 1000);
+
+// ================= AUTO EXPAND TEXTAREA =================
+function autoExpand(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+document.querySelectorAll("textarea.auto-expand").forEach(el => {
+  el.addEventListener("input", function() {
+    autoExpand(this);
+  });
+});
+
+// ================= DATA LOGIC (AUTOSAVE & SUBMIT) =================
+function gatherFormData(status, isTimeout) {
+  const form = document.getElementById("assessmentForm");
+  const formData = new FormData(form);
+  
+  formData.append("participant_id", getParticipantID());
+  formData.append("status", status);
+
+  let savedStart = sessionStorage.getItem("startTime");
+  if (savedStart) {
+    let startDate = new Date(parseInt(savedStart));
+    let elapsed = Math.floor((Date.now() - savedStart) / 1000);
+    let remaining = duration - elapsed;
+    
+    formData.append("start_time", startDate.toString());
+    formData.append("time_spent", elapsed);
+    formData.append("time_remaining", remaining < 0 ? 0 : remaining);
+  }
+
+  if (status === "SUBMITTED") {
+    formData.append("submit_time", new Date().toString());
+    formData.append("is_timeout", isTimeout ? "YES" : "NO");
+  }
+
+  return formData;
+}
+
+function autoSaveToSheet() {
+  if (testSubmitted) return;
+  const formData = gatherFormData("ON_PROGRESS", false);
+  
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .catch(err => console.error("Autosave error", err));
+}
+
+// ================= SIMPAN & PULIHKAN STATE SAAT RELOAD =================
+function saveFormState() {
+  const form = document.getElementById("assessmentForm");
+  const data = {};
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+  sessionStorage.setItem("formDataState", JSON.stringify(data));
+}
+
+function loadFormState() {
+  // 1. Pulihkan seluruh isian nama, dropdown, dan jawaban
+  const savedData = sessionStorage.getItem("formDataState");
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    for (let key in data) {
+      const field = document.querySelector(`[name="${key}"]`);
+      if (field) {
+        field.value = data[key];
+      }
+    }
+  }
+
+  // 2. Sesuaikan ulang tinggi textarea yang sudah terisi agar tidak terpotong
+  document.querySelectorAll("textarea.auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+
+  // 3. Pulihkan halaman terakhir yang sedang dibuka
+  const savedPage = sessionStorage.getItem("currentPage");
+  if (savedPage && document.getElementById(savedPage)) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(savedPage).classList.add('active');
+  }
+
+  // 4. Jika sedang berada di halaman soal (page4), tampilkan kembali timer
+  if (savedPage === "page4" && sessionStorage.getItem("startTime")) {
+    timerStarted = true;
+    document.getElementById("timer").style.display = "block";
+    updateTimer();
+  }
+}
+
+// Jalankan pemulihan otomatis setiap kali halaman selesai dimuat
+window.addEventListener("DOMContentLoaded", loadFormState);
+
+// Simpan otomatis ke sessionStorage setiap ada ketikan atau perubahan pilihan
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => {
+    saveFormState();
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
+  });
+  el.addEventListener("change", saveFormState);
+});
+
+// ================= MODAL & FINAL SUBMIT =================
+function showConfirmModal() {
+  document.getElementById("confirmModal").style.display = "flex";
+}
+function closeConfirmModal() {
+  document.getElementById("confirmModal").style.display = "none";
+}
+
+let isSubmitting = false; 
+
+function finalSubmit(isTimeout) {
+  if (isSubmitting) return; 
+  isSubmitting = true;
+  testSubmitted = true;
+  
+  clearTimeout(autoSaveTimer); 
+  
+  document.getElementById("confirmModal").style.display = "none";
+  document.getElementById("timer").style.display = "none";
+  
+  // 🔥 PERBAIKAN: AMBIL DATA DULU SEBELUM TAMPILAN SOAL DIHILANGKAN
+  const formData = gatherFormData("SUBMITTED", isTimeout);
+
+  // BARU UBAH TAMPILAN JADI LOADING
+  document.getElementById("page4").innerHTML = `
+    <div style="text-align:center; padding: 50px;">
+      <h2>Sedang mengirim jawaban...</h2>
+      <p>Mohon tunggu sebentar.</p>
+    </div>
+  `;
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData })
+    .then(() => {
+      sessionStorage.clear();
+      goToPage('page5');
+    }).catch(() => {
+      alert("Terjadi kesalahan saat mengirim. Silakan coba lagi.");
+      testSubmitted = false;
+      isSubmitting = false; 
+      document.getElementById("timer").style.display = "block";
+    });
+}
+
+// ================= SECURITY & BEHAVIOR TRACKING =================
+function sendBehavior(type) {
+  if (!timerStarted || testSubmitted) return;
+  const formData = new FormData();
+  formData.append("participant_id", getParticipantID());
+  formData.append("behavior", type);
+  formData.append("timestamp_client", new Date().toString());
+
+  fetch(GAS_URL, { method: "POST", mode: "no-cors", body: formData });
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.hidden) sendBehavior("TAB_HIDDEN");
+  else sendBehavior("TAB_ACTIVE");
+});
+window.addEventListener("blur", () => sendBehavior("WINDOW_BLUR"));
+window.addEventListener("focus", () => sendBehavior("WINDOW_FOCUS"));
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12') { e.preventDefault(); sendBehavior("ATTEMPT_F12"); }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_DEVTOOLS_SHORTCUT"); }
+  if (e.ctrlKey && ['U','u'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_VIEW_SOURCE"); }
+  if (e.ctrlKey && ['A','a'].includes(e.key)) { e.preventDefault(); }
+  if (e.ctrlKey && ['C','V','X','c','v','x'].includes(e.key)) { e.preventDefault(); sendBehavior("ATTEMPT_COPY_PASTE"); }
+  if (e.key === 'PrintScreen') { sendBehavior("ATTEMPT_PRINTSCREEN"); navigator.clipboard.writeText("Tindakan screenshot dilarang."); }
+});
+
+window.addEventListener('resize', function() {
+  const threshold = 160;
+  if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
+    sendBehavior("DEVTOOLS_OPENED");
+  }
+});
+</script>
+</body>
+</html>
