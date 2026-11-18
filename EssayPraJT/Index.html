@@ -231,6 +231,7 @@ let lastActivity = Date.now();
 function goToPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
+  sessionStorage.setItem("currentPage", pageId); // <-- TAMBAHKAN BARIS INI
 }
 
 function validateAndGo(current, next) {
@@ -345,11 +346,60 @@ function autoSaveToSheet() {
     .catch(err => console.error("Autosave error", err));
 }
 
+// ================= SIMPAN & PULIHKAN STATE SAAT RELOAD =================
+function saveFormState() {
+  const form = document.getElementById("assessmentForm");
+  const data = {};
+  new FormData(form).forEach((value, key) => {
+    data[key] = value;
+  });
+  sessionStorage.setItem("formDataState", JSON.stringify(data));
+}
+
+function loadFormState() {
+  // 1. Pulihkan seluruh isian nama, dropdown, dan jawaban
+  const savedData = sessionStorage.getItem("formDataState");
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    for (let key in data) {
+      const field = document.querySelector(`[name="${key}"]`);
+      if (field) {
+        field.value = data[key];
+      }
+    }
+  }
+
+  // 2. Sesuaikan ulang tinggi textarea yang sudah terisi agar tidak terpotong
+  document.querySelectorAll("textarea.auto-expand").forEach(el => {
+    if (el.value) autoExpand(el);
+  });
+
+  // 3. Pulihkan halaman terakhir yang sedang dibuka
+  const savedPage = sessionStorage.getItem("currentPage");
+  if (savedPage && document.getElementById(savedPage)) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(savedPage).classList.add('active');
+  }
+
+  // 4. Jika sedang berada di halaman soal (page4), tampilkan kembali timer
+  if (savedPage === "page4" && sessionStorage.getItem("startTime")) {
+    timerStarted = true;
+    document.getElementById("timer").style.display = "block";
+    updateTimer();
+  }
+}
+
+// Jalankan pemulihan otomatis setiap kali halaman selesai dimuat
+window.addEventListener("DOMContentLoaded", loadFormState);
+
+// Simpan otomatis ke sessionStorage setiap ada ketikan atau perubahan pilihan
 document.querySelectorAll("input, select, textarea").forEach(el => {
   el.addEventListener("input", () => {
+    saveFormState();
     clearTimeout(autoSaveTimer);
     autoSaveTimer = setTimeout(autoSaveToSheet, 10000);
   });
+  el.addEventListener("change", saveFormState);
 });
 
 // ================= MODAL & FINAL SUBMIT =================
