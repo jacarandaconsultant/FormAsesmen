@@ -945,21 +945,23 @@ document.querySelectorAll("input, select, textarea").forEach(el => {
   el.addEventListener("change", saveFormState);
 });
 
-// ================= TRACK URUTAN MENJAWAB (J1 - J5) =================
+// ================= TRACK URUTAN MENJAWAB (NO1 - NO5) =================
 const questionKeys = ["j1", "j2", "j3", "j4", "j5"];
 questionKeys.forEach(qKey => {
   const field = document.querySelector(`[name="${qKey}"]`);
+  const label = qKey.replace("j", "no"); // Mengubah j1 -> no1, j2 -> no2, dst.
   if (field) {
     field.addEventListener("input", function() {
       const val = this.value.trim();
       if (val.length > 0) {
-        if (!answerOrder.includes(qKey)) {
-          answerOrder.push(qKey);
+        if (!answerOrder.includes(label)) {
+          answerOrder.push(label);
         }
       } else {
         // Jika peserta menghapus seluruh teks di kolom ini, keluarkan dari urutan
-        answerOrder = answerOrder.filter(item => item !== qKey);
+        answerOrder = answerOrder.filter(item => item !== label);
       }
+      sessionStorage.setItem("answerOrder", JSON.stringify(answerOrder));
     });
   }
 });
